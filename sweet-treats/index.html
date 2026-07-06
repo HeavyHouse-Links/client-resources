@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heavy House &mdash; Low-Cal Sweet Treats</title>
+<style>
+  :root{
+    --ink:#111111;
+    --mid:#808080;
+    --pale:#d9d9d9;
+    --card-bg:#ededed;
+    --muted:#7f7f7f;
+    --disclaimer:#999999;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    --shadow:0 8px 24px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:32px 16px;
+    background:#f4f4f4;
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    display:flex;
+    justify-content:center;
+  }
+  .card{
+    width:100%;
+    max-width:520px;
+    background:#ffffff;
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .header{
+    background:var(--ink);
+    color:#fff;
+    padding:22px 24px;
+    text-align:center;
+    position:relative;
+  }
+  .header .back{
+    position:absolute;
+    top:22px;
+    left:24px;
+    color:#fff;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:700;
+    opacity:0.8;
+  }
+  .header h1{
+    margin:0;
+    font-size:18px;
+    letter-spacing:0.06em;
+    font-weight:800;
+  }
+  .subtitle{
+    padding:18px 24px 4px;
+    font-size:12.5px;
+    color:#555;
+    text-align:center;
+    line-height:1.5;
+  }
+  .section-header{
+    background:var(--ink);
+    color:#fff;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:0.04em;
+    padding:9px 24px;
+    margin-top:22px;
+  }
+  .content{
+    padding:14px 24px 6px;
+  }
+  .content p{
+    font-size:13px;
+    color:var(--ink);
+    line-height:1.6;
+    margin:0 0 10px;
+  }
+  .treat{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    background:var(--card-bg);
+    border-radius:var(--radius-md);
+    padding:14px 16px;
+    margin-bottom:10px;
+  }
+  .treat .text h3{
+    margin:0 0 3px;
+    font-size:14px;
+    font-weight:800;
+    color:var(--ink);
+  }
+  .treat .text p{
+    margin:0;
+    font-size:11.5px;
+    color:var(--muted);
+    line-height:1.4;
+  }
+  .treat .stats{
+    flex:0 0 auto;
+    text-align:right;
+    font-size:12.5px;
+    font-weight:800;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .treat .stats span{
+    display:block;
+    font-size:10px;
+    font-weight:600;
+    color:var(--muted);
+  }
+  .footer{
+    text-align:center;
+    font-size:10.5px;
+    color:var(--disclaimer);
+    font-style:italic;
+    padding:20px 24px 24px;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="header">
+    <a class="back" href="../index.html">&larr; Back</a>
+    <h1>LOW-CAL SWEET TREATS</h1>
+  </div>
+
+  <div class="subtitle">Cravings are normal &mdash; you don't need to white-knuckle through them. These are real products, single serve, that fit into your daily targets without much thought.</div>
+
+  <div class="section-header">TREATS</div>
+  <div class="content">
+
+    <div class="treat">
+      <div class="text">
+        <h3>Golden Gaytime Ice Cream Tub</h3>
+        <p>1 scoop, 57g</p>
+      </div>
+      <div class="stats">115 cal<span>1.8g protein</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Peters Frosty Fruits Tropical</h3>
+        <p>78g bar</p>
+      </div>
+      <div class="stats">80 cal<span>0.4g protein</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Magnum Mini Classic</h3>
+        <p>47g bar</p>
+      </div>
+      <div class="stats">152 cal<span>1.9g protein</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Aeroplane Jelly Lite</h3>
+        <p>125g prepared serve</p>
+      </div>
+      <div class="stats">7 cal<span>1.5g protein</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Zooper Dooper No Sugar</h3>
+        <p>70ml tube</p>
+      </div>
+      <div class="stats">14 cal<span>0g protein</span></div>
+    </div>
+
+  </div>
+
+  <div class="footer">Heavy House &nbsp;&middot;&nbsp; Figures are per single serve as listed on Australian nutrition databases, current at time of writing. Always check the pack for the most accurate info.</div>
+
+</div>
+</body>
+</html>
