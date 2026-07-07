@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heavy House &mdash; Alcohol &amp; Nights Out</title>
+<style>
+  :root{
+    --ink:#111111;
+    --mid:#808080;
+    --pale:#d9d9d9;
+    --card-bg:#ededed;
+    --muted:#7f7f7f;
+    --disclaimer:#999999;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    --shadow:0 8px 24px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    padding:32px 16px;
+    background:#f4f4f4;
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    display:flex;
+    justify-content:center;
+  }
+  .card{
+    width:100%;
+    max-width:520px;
+    background:#ffffff;
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .header{
+    background:var(--ink);
+    color:#fff;
+    padding:22px 24px;
+    text-align:center;
+    position:relative;
+  }
+  .header .back{
+    position:absolute;
+    top:22px;
+    left:24px;
+    color:#fff;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:700;
+    opacity:0.8;
+  }
+  .header h1{
+    margin:0;
+    font-size:18px;
+    letter-spacing:0.06em;
+    font-weight:800;
+  }
+  .subtitle{
+    padding:18px 24px 4px;
+    font-size:12.5px;
+    color:#555;
+    text-align:center;
+    line-height:1.5;
+  }
+  .section-header{
+    background:var(--ink);
+    color:#fff;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:0.04em;
+    padding:9px 24px;
+    margin-top:22px;
+  }
+  .content{
+    padding:14px 24px 6px;
+  }
+  .treat{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    background:var(--card-bg);
+    border-radius:var(--radius-md);
+    padding:14px 16px;
+    margin-bottom:10px;
+  }
+  .treat .text h3{
+    margin:0 0 3px;
+    font-size:14px;
+    font-weight:800;
+    color:var(--ink);
+  }
+  .treat .text p{
+    margin:0;
+    font-size:11.5px;
+    color:var(--muted);
+    line-height:1.4;
+  }
+  .treat .stats{
+    flex:0 0 auto;
+    text-align:right;
+    font-size:12.5px;
+    font-weight:800;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .treat .stats span{
+    display:block;
+    font-size:10px;
+    font-weight:600;
+    color:var(--muted);
+  }
+  .note{
+    margin:2px 2px 12px;
+    font-size:11.5px;
+    color:#555;
+    line-height:1.5;
+  }
+  .tip{
+    background:var(--card-bg);
+    border-radius:var(--radius-md);
+    padding:14px 16px;
+    margin-bottom:10px;
+    font-size:12.5px;
+    color:#333;
+    line-height:1.5;
+  }
+  .footer{
+    text-align:center;
+    font-size:10.5px;
+    color:var(--disclaimer);
+    font-style:italic;
+    padding:20px 24px 24px;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="header">
+    <a class="back" href="../index.html">&larr; Back</a>
+    <h1>ALCOHOL &amp; NIGHTS OUT</h1>
+  </div>
+
+  <div class="subtitle">Fitness shouldn't cost you your mates, and a night out shouldn't cost you your progress. No lectures here &mdash; just what's actually in the glass, so you can pick your number and own it.</div>
+
+  <div class="section-header">BEER</div>
+  <div class="content">
+
+    <div class="treat">
+      <div class="text">
+        <h3>Heaps Normal Quiet XPA</h3>
+        <p>355ml can &mdash; non-alcoholic, tastes like a real beer</p>
+      </div>
+      <div class="stats">63 cal<span>0.0 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Great Northern Super Crisp</h3>
+        <p>330ml bottle, 3.5%</p>
+      </div>
+      <div class="stats">88 cal<span>0.9 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>XXXX Gold</h3>
+        <p>375ml can, 3.5%</p>
+      </div>
+      <div class="stats">108 cal<span>1.0 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Carlton Dry</h3>
+        <p>330ml bottle, 4.5%</p>
+      </div>
+      <div class="stats">110 cal<span>1.2 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Corona Extra</h3>
+        <p>355ml bottle, 4.5%</p>
+      </div>
+      <div class="stats">149 cal<span>1.3 std drinks</span></div>
+    </div>
+
+  </div>
+
+  <div class="section-header">WINE &amp; BUBBLES</div>
+  <div class="content">
+
+    <div class="treat">
+      <div class="text">
+        <h3>Prosecco</h3>
+        <p>120ml glass, 11%</p>
+      </div>
+      <div class="stats">78 cal<span>1.0 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Moscato</h3>
+        <p>150ml glass, 5.5% &mdash; sweet but low alcohol, so lighter than you'd think</p>
+      </div>
+      <div class="stats">96 cal<span>0.7 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Ros&eacute;</h3>
+        <p>150ml glass, 11%</p>
+      </div>
+      <div class="stats">105 cal<span>1.3 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Dry White (Sauv Blanc, Pinot Grigio)</h3>
+        <p>150ml glass, 12.5%</p>
+      </div>
+      <div class="stats">110 cal<span>1.5 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Red (Shiraz, Cab Sav)</h3>
+        <p>150ml glass, 13.5%</p>
+      </div>
+      <div class="stats">118 cal<span>1.6 std drinks</span></div>
+    </div>
+
+    <p class="note">The calories in wine come from the alcohol, not the sweetness &mdash; the higher the percentage, the higher the number.</p>
+
+  </div>
+
+  <div class="section-header">SPIRITS &amp; MIXERS</div>
+  <div class="content">
+
+    <div class="treat">
+      <div class="text">
+        <h3>Any Spirit, Neat or On Ice</h3>
+        <p>30ml nip &mdash; vodka, gin, whisky, rum, tequila all the same</p>
+      </div>
+      <div class="stats">67 cal<span>1.0 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Vodka, Soda &amp; Fresh Lime</h3>
+        <p>30ml nip + soda water</p>
+      </div>
+      <div class="stats">70 cal<span>1.0 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Gin &amp; Tonic</h3>
+        <p>30ml nip + 125ml tonic</p>
+      </div>
+      <div class="stats">110 cal<span>1.0 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Scotch &amp; Coke</h3>
+        <p>30ml nip + 125ml Coke</p>
+      </div>
+      <div class="stats">120 cal<span>1.0 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Vodka &amp; Orange Juice</h3>
+        <p>30ml nip + 150ml juice</p>
+      </div>
+      <div class="stats">130 cal<span>1.0 std drinks</span></div>
+    </div>
+
+    <p class="note">The spirit is only ever 67 calories &mdash; the mixer decides the rest. Order any spirit with a zero-sugar mixer (soda, Coke No Sugar, diet tonic) and every drink on this list is about 70.</p>
+
+  </div>
+
+  <div class="section-header">PREMIXED CANS</div>
+  <div class="content">
+
+    <div class="treat">
+      <div class="text">
+        <h3>Vodka Cruiser Sugar Free</h3>
+        <p>275ml bottle, 4.6%</p>
+      </div>
+      <div class="stats">74 cal<span>1.0 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>White Claw Hard Seltzer</h3>
+        <p>330ml can, 4.5%</p>
+      </div>
+      <div class="stats">95 cal<span>1.2 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Bundaberg Bare No Sugar Cola</h3>
+        <p>375ml can, 4.6%</p>
+      </div>
+      <div class="stats">100 cal<span>1.4 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>-196 Double Lemon</h3>
+        <p>330ml can, 6%</p>
+      </div>
+      <div class="stats">122 cal<span>1.6 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Bundaberg Original Rum &amp; Cola</h3>
+        <p>375ml can, 4.6%</p>
+      </div>
+      <div class="stats">248 cal<span>1.4 std drinks</span></div>
+    </div>
+
+    <p class="note">Same brand, same buzz: Bundy &amp; Cola is 248, Bundy Bare is 100. The sugar is the difference, not the rum.</p>
+
+  </div>
+
+  <div class="section-header">COCKTAILS</div>
+  <div class="content">
+
+    <div class="treat">
+      <div class="text">
+        <h3>Margarita</h3>
+        <p>Classic &mdash; tequila, lime, triple sec</p>
+      </div>
+      <div class="stats">110 cal<span>~1.2 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Aperol Spritz</h3>
+        <p>Prosecco, Aperol, soda</p>
+      </div>
+      <div class="stats">~140 cal<span>~1.1 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Mojito</h3>
+        <p>With 60ml rum</p>
+      </div>
+      <div class="stats">170 cal<span>~1.9 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Pi&ntilde;a Colada</h3>
+        <p>289 with cream</p>
+      </div>
+      <div class="stats">210 cal<span>~1.3 std drinks</span></div>
+    </div>
+
+    <div class="treat">
+      <div class="text">
+        <h3>Espresso Martini</h3>
+        <p>Vodka, coffee liqueur, espresso, sugar</p>
+      </div>
+      <div class="stats">302 cal<span>~1.9 std drinks</span></div>
+    </div>
+
+    <p class="note">One espresso martini is three vodka sodas. Have it if you want it &mdash; just know what you're ordering.</p>
+
+  </div>
+
+  <div class="section-header">PLAY IT SMART</div>
+  <div class="content">
+
+    <div class="tip"><strong>Pick your number before you leave the house.</strong> Deciding at the bar after three drinks never goes well. Three or four drinks planned beats six unplanned.</div>
+
+    <div class="tip"><strong>Make spirit + zero-sugar mixer your default order.</strong> It turns every drink into roughly 70 calories and nobody at the table knows or cares what's in your glass.</div>
+
+    <div class="tip"><strong>One water between drinks.</strong> Slows the pace, halves the drinks, and tomorrow-you will thank you at training.</div>
+
+    <div class="tip"><strong>Eat a proper meal before you go out.</strong> Protein and carbs. Skipping dinner to "save calories" just means you drink faster on an empty stomach and order the worst thing on the late-night menu.</div>
+
+    <div class="tip"><strong>The kebab does more damage than the drinks.</strong> Four vodka sodas is under 300 calories &mdash; the 1am feed can be 1,000+. If you win the end of the night, you've won the night.</div>
+
+    <div class="tip"><strong>The next morning, go back to normal.</strong> No punishment cardio, no skipping meals, no writing off the whole weekend. One night out never broke anyone's progress &mdash; the spiral afterwards does.</div>
+
+  </div>
+
+  <div class="footer">Heavy House &nbsp;&middot;&nbsp; Figures are typical serves from Australian nutrition databases; pub pours and recipes vary. Standard drinks are approximate. Drink responsibly.</div>
+
+</div>
+</body>
+</html>
