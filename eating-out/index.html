@@ -105,27 +105,41 @@
     color:var(--ink);
     line-height:1.6;
   }
-  .chain{
+  .treat{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
     background:var(--card-bg);
     border-radius:var(--radius-md);
     padding:14px 16px;
     margin-bottom:10px;
   }
-  .chain h4{
-    margin:0 0 6px;
-    font-size:13px;
+  .treat .text h3{
+    margin:0 0 3px;
+    font-size:14px;
     font-weight:800;
     color:var(--ink);
   }
-  .chain ul{
+  .treat .text p{
     margin:0;
-    padding-left:16px;
+    font-size:11.5px;
+    color:var(--muted);
+    line-height:1.4;
   }
-  .chain li{
-    font-size:12px;
-    color:#444;
-    line-height:1.6;
-    margin-bottom:2px;
+  .treat .stats{
+    flex:0 0 auto;
+    text-align:right;
+    font-size:12.5px;
+    font-weight:800;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .treat .stats span{
+    display:block;
+    font-size:10px;
+    font-weight:600;
+    color:var(--muted);
   }
   .footer{
     text-align:center;
@@ -176,43 +190,81 @@
       <li>Watch liquid calories &mdash; stick to sugar-free drinks like Coke Zero, Pepsi Max, or Diet Coke instead of regular soft drinks, juices, or frappe-style drinks.</li>
       <li>Something is almost always better than skipping meals entirely and arriving starving at your next one.</li>
     </ul>
+  </div>
 
-    <div class="chain">
-      <h4>Guzman y Gomez</h4>
-      <ul>
-        <li>Grilled Chicken Burrito Bowl &mdash; 659 cal, 43.8g protein (Excludes sauces).</li>
-      </ul>
+  <div class="section-header">GUZMAN Y GOMEZ</div>
+  <div class="content">
+    <div class="treat">
+      <div class="text">
+        <h3>Grilled Chicken Burrito Bowl</h3>
+        <p>Excludes sauces</p>
+      </div>
+      <div class="stats">43.8g protein<span>659 cal</span></div>
     </div>
+  </div>
 
-    <div class="chain">
-      <h4>Mad Mex</h4>
-      <ul>
-        <li>Chicken Quesadilla &mdash; 655 cal, 50g protein (Excludes sauces).</li>
-      </ul>
+  <div class="section-header">MAD MEX</div>
+  <div class="content">
+    <div class="treat">
+      <div class="text">
+        <h3>Chicken Quesadilla</h3>
+        <p>Excludes sauces</p>
+      </div>
+      <div class="stats">50g protein<span>655 cal</span></div>
     </div>
+  </div>
 
-    <div class="chain">
-      <h4>Nando's</h4>
-      <ul>
-        <li>4 Peri-Peri Tenders with regular Peri-Peri Chips &mdash; 691 cal, 47g protein (Excludes sauces).</li>
-        <li>1/4 Chicken (skin off) with regular Spicy Rice &mdash; 688 cal, 60.4g protein (Excludes sauces).</li>
-      </ul>
+  <div class="section-header">NANDO'S</div>
+  <div class="content">
+    <div class="treat">
+      <div class="text">
+        <h3>4 Peri-Peri Tenders &amp; Regular Chips</h3>
+        <p>Excludes sauces</p>
+      </div>
+      <div class="stats">47g protein<span>691 cal</span></div>
     </div>
-
-    <div class="chain">
-      <h4>Grill'd</h4>
-      <ul>
-        <li>Simply Grill'd Beef Burger (Traditional Bun) with 6 HFC Natural Bites &mdash; 834 cal, 53.9g protein (Includes the burger's standard sauce; excludes any dipping sauce for the bites).</li>
-        <li>Chicken Dynamic (Panini Bun) with Sweet Potato Chips (for one) &mdash; 770 cal, 48.6g protein (Includes the burger's standard sauce; excludes any dipping sauce for the chips).</li>
-      </ul>
+    <div class="treat">
+      <div class="text">
+        <h3>1/4 Chicken &amp; Regular Spicy Rice</h3>
+        <p>Skin off &mdash; excludes sauces</p>
+      </div>
+      <div class="stats">60.4g protein<span>688 cal</span></div>
     </div>
+  </div>
 
-    <div class="chain">
-      <h4>Subway</h4>
-      <ul>
-        <li>Chicken Strips 6-Inch Sub &mdash; 382 cal, 25.8g protein (Includes standard mayonnaise).</li>
-        <li>Chicken &amp; Bacon Ranch Wrap &mdash; 499 cal, 27.8g protein (Includes standard ranch dressing).</li>
-      </ul>
+  <div class="section-header">GRILL'D</div>
+  <div class="content">
+    <div class="treat">
+      <div class="text">
+        <h3>Simply Grill'd Beef Burger &amp; 6 HFC Natural Bites</h3>
+        <p>Traditional bun &mdash; includes the burger's standard sauce, excludes dipping sauce for the bites</p>
+      </div>
+      <div class="stats">53.9g protein<span>834 cal</span></div>
+    </div>
+    <div class="treat">
+      <div class="text">
+        <h3>Chicken Dynamic &amp; Sweet Potato Chips</h3>
+        <p>Panini bun, chips for one &mdash; includes the burger's standard sauce, excludes dipping sauce for the chips</p>
+      </div>
+      <div class="stats">48.6g protein<span>770 cal</span></div>
+    </div>
+  </div>
+
+  <div class="section-header">SUBWAY</div>
+  <div class="content">
+    <div class="treat">
+      <div class="text">
+        <h3>Chicken Strips 6-Inch Sub</h3>
+        <p>Includes standard mayonnaise</p>
+      </div>
+      <div class="stats">25.8g protein<span>382 cal</span></div>
+    </div>
+    <div class="treat">
+      <div class="text">
+        <h3>Chicken &amp; Bacon Ranch Wrap</h3>
+        <p>Includes standard ranch dressing</p>
+      </div>
+      <div class="stats">27.8g protein<span>499 cal</span></div>
     </div>
   </div>
 
