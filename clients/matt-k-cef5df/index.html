@@ -73,6 +73,12 @@
   .gap{margin-top:14px;}
   footer{text-align:center; font-size:11px; color:var(--muted); margin-top:26px; line-height:1.6;}
   iframe.sink{display:none;}
+  .banner{
+    display:none; background:var(--ink); color:#fff; text-align:center;
+    font-size:13px; font-weight:800; letter-spacing:0.06em;
+    padding:13px 14px; border-radius:var(--radius-md); margin-bottom:16px;
+  }
+  .card.due{border:2px solid var(--ink);}
 </style>
 </head>
 <body>
@@ -83,6 +89,8 @@
   <div class="client">Matt Kocaj</div>
   <div class="goal">Reduce Body Fat &amp; Rehab</div>
 </header>
+
+<div class="banner" id="fribanner">CHECK IN DAY. Two minutes, knock it out below.</div>
 
 <!-- WEIGH IN -->
 <div class="card">
@@ -120,7 +128,7 @@
 </div>
 
 <!-- WEEKLY CHECK IN -->
-<div class="card">
+<div class="card" id="cicard">
   <h2>Weekly Check In</h2>
   <p class="sched">Every Friday. Two minutes, be honest with it.</p>
   <div class="gap"><a class="btn" href="https://form.jotform.com/262090491834055?q3_textbox1=Matt%20Kocaj">Open Check In</a></div>
@@ -144,6 +152,11 @@
 
 <script>
 (function(){
+  // ---- Friday check-in reminder: banner + highlighted card, all day Friday ----
+  if(new Date().getDay() === 5){
+    document.getElementById('fribanner').style.display='block';
+    document.getElementById('cicard').classList.add('due');
+  }
   // ---- weigh in ----
   var wform=document.getElementById('wform'), wbtn=document.getElementById('wbtn'),
       wok=document.getElementById('wok'), werr=document.getElementById('werr'),
