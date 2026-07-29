@@ -84,6 +84,16 @@
     margin-top:14px;
   }
   .tips{font-size:12px; color:var(--muted); margin-top:10px; line-height:1.55;}
+  .wrow{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:9px 2px; border-bottom:0.5px solid var(--pale);
+    font-size:14px;
+  }
+  .wrow:last-child{border-bottom:none;}
+  .wdate{color:var(--muted); font-size:12.5px;}
+  .wkg{font-weight:800;}
+  .wdelta{font-size:11.5px; color:var(--muted); font-weight:600; margin-left:8px;}
+  .wtoday{background:var(--card-bg); border-radius:var(--radius-sm); padding:9px 10px;}
 </style>
 </head>
 <body>
@@ -113,6 +123,14 @@
   <div class="ok" id="wok">Logged. Nice work.</div>
   <div class="err" id="werr">That did not send. Check your signal and try again.</div>
   <div class="last" id="wlast"></div>
+</div>
+
+<!-- WEIGHT TRACKER -->
+<div class="card">
+  <h2>Weight Tracker</h2>
+  <p class="sched" id="trend"></p>
+  <div id="wtable"></div>
+  <div class="filecount" id="wempty">Your history builds here from your first weigh-in.</div>
 </div>
 
 <!-- PHOTOS -->
@@ -197,9 +215,83 @@
     try{
       var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
       localStorage.setItem('hh_last_weigh', JSON.stringify({kg:wval.value, day:days[new Date().getDay()]}));
+      var now=new Date();
+      var iso=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+      var hist=JSON.parse(localStorage.getItem('hh_weigh_history')||'[]');
+      hist=hist.filter(function(e){return e.date!==iso;});
+      hist.push({date:iso, kg:parseFloat(wval.value)});
+      localStorage.setItem('hh_weigh_history', JSON.stringify(hist.slice(-30)));
     }catch(e){}
     showLast(); wval.value='';
+    renderTracker();
   });
+
+  // ---- weight tracker: WEEKLY AVERAGES from weights.json (verified ledger,
+  // updated each morning) merged with local same-day logs so the current week's
+  // running average moves the moment a weigh-in is logged. Daily numbers are
+  // noise; the week average is the signal. ----
+  function renderTracker(){
+    fetch('weights.json?t='+Date.now())
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .catch(function(){ return []; })
+      .then(function(server){
+        var entries = Array.isArray(server) ? server.slice() : [];
+        var have = {};
+        entries.forEach(function(e){ have[e.date]=true; });
+        try{
+          JSON.parse(localStorage.getItem('hh_weigh_history')||'[]').forEach(function(e){
+            if(!have[e.date]){ entries.push({date:e.date, kg:e.kg}); }
+          });
+        }catch(e){}
+        var tbl=document.getElementById('wtable'), empty=document.getElementById('wempty'),
+            trend=document.getElementById('trend');
+        if(!entries.length){ tbl.innerHTML=''; empty.style.display='block'; trend.textContent=''; return; }
+        empty.style.display='none';
+        // group by week starting Monday
+        var weeks={};
+        entries.forEach(function(e){
+          var d=new Date(e.date+'T00:00:00');
+          var mon=new Date(d);
+          mon.setDate(d.getDate()-((d.getDay()+6)%7));
+          var key=mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');
+          (weeks[key]=weeks[key]||[]).push(e.kg);
+        });
+        var keys=Object.keys(weeks).sort();
+        var avgs=keys.map(function(k){
+          var v=weeks[k];
+          return {week:k, n:v.length,
+                  avg:Math.round(v.reduce(function(a,b){return a+b;},0)/v.length*10)/10};
+        });
+        var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var nowD=new Date();
+        var curMon=new Date(nowD); curMon.setDate(nowD.getDate()-((nowD.getDay()+6)%7));
+        var curKey=curMon.getFullYear()+'-'+String(curMon.getMonth()+1).padStart(2,'0')+'-'+String(curMon.getDate()).padStart(2,'0');
+        // headline: change between first and latest week averages
+        if(avgs.length>=2){
+          var diff=Math.round((avgs[avgs.length-1].avg-avgs[0].avg)*10)/10;
+          trend.textContent = diff<0 ? 'Down '+Math.abs(diff)+' kg since your first week.' :
+            diff>0 ? 'Up '+diff+' kg since your first week.' : 'Holding steady since your first week.';
+        } else {
+          trend.textContent='Week one underway. The average is what matters, not the daily number.';
+        }
+        var html='';
+        avgs.slice(-12).reverse().forEach(function(w,i,arr){
+          var d=new Date(w.week+'T00:00:00');
+          var label=(w.week===curKey) ? 'This week ('+w.n+(w.n===1?' log':' logs')+' so far)'
+                                      : 'Week of '+d.getDate()+' '+months[d.getMonth()];
+          var prev=arr[i+1];
+          var delta='';
+          if(prev){
+            var dv=Math.round((w.avg-prev.avg)*10)/10;
+            if(dv!==0){ delta='<span class="wdelta">'+(dv>0?'+':'')+dv+'</span>'; }
+          }
+          html+='<div class="wrow'+(w.week===curKey?' wtoday':'')+'"><span class="wdate">'+label+
+                '</span><span><span class="wkg">'+w.avg.toFixed(1)+' kg</span>'+delta+'</span></div>';
+        });
+        tbl.innerHTML=html;
+      });
+  }
+  renderTracker();
 
   // ---- photos ----
   var pform=document.getElementById('pform'), pfiles=document.getElementById('pfiles'),
