@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Heavy House">
+<link rel="apple-touch-icon" href="../../assets/hh-logo.png">
+<link rel="icon" href="../../assets/hh-logo.png">
+<title>Heavy House</title>
+<style>
+  :root{
+    --ink:#111111;
+    --mid:#808080;
+    --pale:#d9d9d9;
+    --card-bg:#ededed;
+    --muted:#7f7f7f;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    --shadow:0 8px 24px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    background:#f4f4f4; color:var(--ink);
+    padding:20px 16px calc(40px + env(safe-area-inset-bottom));
+    max-width:520px; margin:0 auto;
+  }
+  header{text-align:center; padding:18px 0 22px;}
+  header img{width:54px; height:54px; object-fit:contain;}
+  .brand{font-size:20px; font-weight:800; letter-spacing:0.14em; margin-top:8px;}
+  .client{font-size:14px; color:var(--mid); margin-top:4px; font-weight:600;}
+  .goal{font-size:12px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:0.08em;}
+  .card{
+    background:#ffffff; border-radius:var(--radius-lg); box-shadow:var(--shadow);
+    padding:22px 20px; margin-bottom:16px;
+  }
+  .card h2{font-size:15px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;}
+  .sched{font-size:12.5px; color:var(--muted); margin-top:5px; line-height:1.5;}
+  .row{display:flex; gap:10px; margin-top:14px;}
+  input[type=number]{
+    flex:1; min-width:0; font-size:26px; font-weight:700; text-align:center;
+    padding:12px 10px; border:1.5px solid var(--pale); border-radius:var(--radius-md);
+    background:var(--card-bg); color:var(--ink); -webkit-appearance:none; appearance:none;
+  }
+  input[type=number]:focus{outline:none; border-color:var(--ink);}
+  .btn{
+    display:block; width:100%; border:none; cursor:pointer; text-align:center;
+    background:var(--ink); color:#fff; font-size:14px; font-weight:800;
+    letter-spacing:0.08em; text-transform:uppercase; padding:15px 12px;
+    border-radius:var(--radius-md); text-decoration:none;
+    font-family:inherit;
+  }
+  .btn:active{opacity:0.75;}
+  .btn[disabled]{background:var(--mid); cursor:default;}
+  .btn.secondary{background:#fff; color:var(--ink); border:1.5px solid var(--ink);}
+  .row .btn{width:auto; flex:0 0 auto; padding:15px 22px;}
+  .ok{
+    display:none; margin-top:12px; font-size:13.5px; font-weight:700;
+    text-align:center; color:var(--ink); background:var(--card-bg);
+    border-radius:var(--radius-sm); padding:11px;
+  }
+  .err{
+    display:none; margin-top:12px; font-size:13px; font-weight:600;
+    text-align:center; color:#8a1f1f; background:#f7e9e9;
+    border-radius:var(--radius-sm); padding:11px;
+  }
+  .last{font-size:12px; color:var(--muted); margin-top:10px; text-align:center;}
+  .filecount{font-size:13px; color:var(--mid); font-weight:600; margin-top:10px; text-align:center;}
+  .gap{margin-top:14px;}
+  footer{text-align:center; font-size:11px; color:var(--muted); margin-top:26px; line-height:1.6;}
+  iframe.sink{display:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="../../assets/hh-logo.png" alt="Heavy House">
+  <div class="brand">HEAVY HOUSE</div>
+  <div class="client">Matt Kocaj</div>
+  <div class="goal">Reduce Body Fat &amp; Rehab</div>
+</header>
+
+<!-- WEIGH IN -->
+<div class="card">
+  <h2>Log Weigh In</h2>
+  <p class="sched">Every morning, fasted. Before any food or liquid.</p>
+  <form id="wform" action="https://submit.jotform.com/submit/262090628219054" method="POST" target="wsink">
+    <input type="hidden" name="formID" value="262090628219054">
+    <input type="hidden" name="simple_spc" value="262090628219054-262090628219054">
+    <input type="hidden" name="q3_q3_textbox1" value="Matt Kocaj">
+    <div class="row">
+      <input type="number" name="q24_weightkg" id="wval" inputmode="decimal" step="0.1" min="30" max="300" placeholder="0.0" required>
+      <button class="btn" id="wbtn" type="submit">Log</button>
+    </div>
+  </form>
+  <div class="ok" id="wok">Logged. Nice work.</div>
+  <div class="err" id="werr">That did not send. Check your signal and try again.</div>
+  <div class="last" id="wlast"></div>
+</div>
+
+<!-- PHOTOS -->
+<div class="card">
+  <h2>Check In Photos</h2>
+  <p class="sched">Every Saturday morning, fasted. Before any food or liquid. Front, side and back.</p>
+  <form id="pform" action="https://submit.jotform.com/submit/262091087523052" method="POST" target="psink" enctype="multipart/form-data">
+    <input type="hidden" name="formID" value="262091087523052">
+    <input type="hidden" name="simple_spc" value="262091087523052-262091087523052">
+    <input type="hidden" name="q3_q3_textbox1" value="Matt Kocaj">
+    <input type="file" name="q24_yourPhotos[]" id="pfiles" accept="image/*" multiple hidden>
+    <div class="gap"><button type="button" class="btn secondary" id="pickbtn">Choose Photos</button></div>
+    <div class="filecount" id="pcount"></div>
+    <div class="gap"><button class="btn" id="pbtn" type="submit" style="display:none;">Upload</button></div>
+  </form>
+  <div class="ok" id="pok">Photos in. Good stuff.</div>
+  <div class="err" id="perr">Upload did not send. Check your signal and try again.</div>
+</div>
+
+<!-- WEEKLY CHECK IN -->
+<div class="card">
+  <h2>Weekly Check In</h2>
+  <p class="sched">Every Friday. Two minutes, be honest with it.</p>
+  <div class="gap"><a class="btn" href="https://form.jotform.com/262090491834055?q3_textbox1=Matt%20Kocaj">Open Check In</a></div>
+</div>
+
+<!-- MEAL PLAN -->
+<div class="card">
+  <h2>Your Meal Plan</h2>
+  <p class="sched" id="plannote">Your plan lives here. Revisit it any time.</p>
+  <div class="gap"><a class="btn secondary" id="planbtn" href="#" style="display:none;">Open Meal Plan</a></div>
+  <div class="filecount" id="plansoon">Being built. It will appear right here.</div>
+</div>
+
+<footer>
+  Heavy House &middot; Personal page for Matt Kocaj<br>
+  Questions? Message Luke on WhatsApp.
+</footer>
+
+<iframe class="sink" name="wsink" id="wsink"></iframe>
+<iframe class="sink" name="psink" id="psink"></iframe>
+
+<script>
+(function(){
+  // ---- weigh in ----
+  var wform=document.getElementById('wform'), wbtn=document.getElementById('wbtn'),
+      wok=document.getElementById('wok'), werr=document.getElementById('werr'),
+      wval=document.getElementById('wval'), wlast=document.getElementById('wlast'),
+      wsink=document.getElementById('wsink'), wpending=false;
+  function showLast(){
+    try{
+      var d=JSON.parse(localStorage.getItem('hh_last_weigh')||'null');
+      if(d) wlast.textContent='Last logged: '+d.kg+' kg on '+d.day;
+    }catch(e){}
+  }
+  showLast();
+  wform.addEventListener('submit', function(){
+    wbtn.disabled=true; wbtn.textContent='...';
+    wok.style.display='none'; werr.style.display='none';
+    wpending=true;
+    setTimeout(function(){
+      if(wpending){ wpending=false; werr.style.display='block'; wbtn.disabled=false; wbtn.textContent='Log'; }
+    }, 20000);
+  });
+  wsink.addEventListener('load', function(){
+    if(!wpending) return;
+    wpending=false;
+    wok.style.display='block'; wbtn.disabled=false; wbtn.textContent='Log';
+    try{
+      var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      localStorage.setItem('hh_last_weigh', JSON.stringify({kg:wval.value, day:days[new Date().getDay()]}));
+    }catch(e){}
+    showLast(); wval.value='';
+  });
+
+  // ---- photos ----
+  var pform=document.getElementById('pform'), pfiles=document.getElementById('pfiles'),
+      pickbtn=document.getElementById('pickbtn'), pbtn=document.getElementById('pbtn'),
+      pcount=document.getElementById('pcount'), pok=document.getElementById('pok'),
+      perr=document.getElementById('perr'), psink=document.getElementById('psink'), ppending=false;
+  pickbtn.addEventListener('click', function(){ pfiles.click(); });
+  pfiles.addEventListener('change', function(){
+    var n=pfiles.files.length;
+    pcount.textContent = n ? (n+(n===1?' photo':' photos')+' ready') : '';
+    pbtn.style.display = n ? 'block' : 'none';
+    pok.style.display='none'; perr.style.display='none';
+  });
+  pform.addEventListener('submit', function(){
+    pbtn.disabled=true; pbtn.textContent='Uploading...';
+    pok.style.display='none'; perr.style.display='none';
+    ppending=true;
+    setTimeout(function(){
+      if(ppending){ ppending=false; perr.style.display='block'; pbtn.disabled=false; pbtn.textContent='Upload'; }
+    }, 120000);
+  });
+  psink.addEventListener('load', function(){
+    if(!ppending) return;
+    ppending=false;
+    pok.style.display='block'; pbtn.disabled=false; pbtn.textContent='Upload';
+    pbtn.style.display='none'; pcount.textContent=''; pform.reset();
+  });
+})();
+</script>
+
+</body>
+</html>
