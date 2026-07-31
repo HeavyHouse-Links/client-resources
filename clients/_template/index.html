@@ -101,8 +101,8 @@
 <header>
   <img src="../../assets/hh-logo.png" alt="Heavy House">
   <div class="brand">HEAVY HOUSE</div>
-  <div class="client">Matt Kocaj</div>
-  <div class="goal">Reduce Body Fat &amp; Rehab</div>
+  <div class="client">{{CLIENT_NAME}}</div>
+  <div class="goal">{{CLIENT_GOAL}}</div>
 </header>
 
 <div class="banner" id="fribanner">CHECK IN DAY. Two minutes, knock it out below.</div>
@@ -114,7 +114,7 @@
   <form id="wform" action="https://submit.jotform.com/submit/262090628219054" method="POST" target="wsink">
     <input type="hidden" name="formID" value="262090628219054">
     <input type="hidden" name="simple_spc" value="262090628219054-262090628219054">
-    <input type="hidden" name="q3_q3_textbox1" value="Matt Kocaj">
+    <input type="hidden" name="q3_q3_textbox1" value="{{CLIENT_NAME}}">
     <div class="row">
       <input type="number" name="q24_weightkg" id="wval" inputmode="decimal" step="0.1" min="30" max="300" placeholder="0.0" required>
       <button class="btn" id="wbtn" type="submit">Log</button>
@@ -137,12 +137,12 @@
 <div class="card">
   <h2>Check In Photos</h2>
   <p class="sched">Every Saturday morning, fasted. Before any food or liquid. Front, side and back.</p>
-  <img class="template" src="../../progress-photos/template-male.jpg" alt="Photo pose template: front, side, back">
+  <img class="template" src="../../progress-photos/{{POSE_TEMPLATE}}" alt="Photo pose template: front, side, back">
   <p class="tips">Match the template. Same spot, same light, phone at chest height, stand relaxed. Do not flex or suck in, honest beats flattering.</p>
   <form id="pform" action="https://submit.jotform.com/submit/262091087523052" method="POST" target="psink" enctype="multipart/form-data">
     <input type="hidden" name="formID" value="262091087523052">
     <input type="hidden" name="simple_spc" value="262091087523052-262091087523052">
-    <input type="hidden" name="q3_q3_textbox1" value="Matt Kocaj">
+    <input type="hidden" name="q3_q3_textbox1" value="{{CLIENT_NAME}}">
     <input type="file" name="q24_yourPhotos[]" id="pfiles" accept="image/*" multiple hidden>
     <div class="gap"><button type="button" class="btn secondary" id="pickbtn">Choose Photos</button></div>
     <div class="filecount" id="pcount"></div>
@@ -156,7 +156,7 @@
 <div class="card" id="cicard">
   <h2>Weekly Check In</h2>
   <p class="sched">Every Friday. Two minutes, be honest with it.</p>
-  <div class="gap"><a class="btn" href="https://form.jotform.com/262090491834055?q3_textbox1=Matt%20Kocaj">Open Check In</a></div>
+  <div class="gap"><a class="btn" href="https://form.jotform.com/262090491834055?q3_textbox1={{CLIENT_NAME_URL}}">Open Check In</a></div>
 </div>
 
 <!-- MEAL PLAN -->
@@ -182,7 +182,7 @@
 </div>
 
 <footer>
-  Heavy House &middot; Personal page for Matt Kocaj
+  Heavy House &middot; Personal page for {{CLIENT_NAME}}
 </footer>
 
 <iframe class="sink" name="wsink" id="wsink"></iframe>
