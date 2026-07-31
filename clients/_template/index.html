@@ -84,6 +84,8 @@
     margin-top:14px;
   }
   .tips{font-size:12px; color:var(--muted); margin-top:10px; line-height:1.55;}
+  .sbar{height:4px; background:var(--pale); border-radius:2px; margin:2px 2px 8px;}
+  .sbar i{display:block; height:100%; background:var(--ink); border-radius:2px;}
   .wrow{
     display:flex; justify-content:space-between; align-items:baseline;
     padding:9px 2px; border-bottom:0.5px solid var(--pale);
@@ -131,6 +133,25 @@
   <p class="sched" id="trend"></p>
   <div id="wtable"></div>
   <div class="filecount" id="wempty">Your history builds here from your first weigh-in.</div>
+</div>
+
+<!-- STEPS -->
+<div class="card">
+  <h2>Steps</h2>
+  <p class="sched" id="shead">Log yesterday's total each morning, straight off the watch.</p>
+  <form id="sform" action="https://submit.jotform.com/submit/262110814232039" method="POST" target="ssink">
+    <input type="hidden" name="formID" value="262110814232039">
+    <input type="hidden" name="simple_spc" value="262110814232039-262110814232039">
+    <input type="hidden" name="q3_q3_textbox1" value="{{CLIENT_NAME}}">
+    <div class="row">
+      <input type="number" name="q24_stepsYesterday" id="sval" inputmode="numeric" step="1" min="0" max="150000" placeholder="0" required>
+      <button class="btn" id="sbtn" type="submit">Log</button>
+    </div>
+  </form>
+  <div class="ok" id="sok">Steps in. Keep moving.</div>
+  <div class="err" id="serr">That did not send. Check your signal and try again.</div>
+  <div id="stable" style="margin-top:12px;"></div>
+  <div class="filecount" id="sempty">Your weekly averages build here from your first log.</div>
 </div>
 
 <!-- PHOTOS -->
@@ -187,6 +208,7 @@
 
 <iframe class="sink" name="wsink" id="wsink"></iframe>
 <iframe class="sink" name="psink" id="psink"></iframe>
+<iframe class="sink" name="ssink" id="ssink"></iframe>
 
 <script>
 (function(){
@@ -326,6 +348,88 @@
     pok.style.display='block'; pbtn.disabled=false; pbtn.textContent='Upload';
     pbtn.style.display='none'; pcount.textContent=''; pform.reset();
   });
+
+  // ---- steps: log yesterday's total; weekly averages vs optional target ----
+  var STEP_TARGET = {{STEP_TARGET}};  // 0 = no target set yet; Luke sets per client
+  var sform=document.getElementById('sform'), sbtn=document.getElementById('sbtn'),
+      sok=document.getElementById('sok'), serr=document.getElementById('serr'),
+      sval=document.getElementById('sval'), ssink=document.getElementById('ssink'),
+      shead=document.getElementById('shead'), spending=false;
+  if(STEP_TARGET>0){ shead.textContent='Target: '+STEP_TARGET.toLocaleString()+' a day. Log yesterday\'s total each morning.'; }
+  function yestIso(){
+    var d=new Date(); d.setDate(d.getDate()-1);
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  sform.addEventListener('submit', function(){
+    sbtn.disabled=true; sbtn.textContent='...';
+    sok.style.display='none'; serr.style.display='none';
+    spending=true;
+    setTimeout(function(){
+      if(spending){ spending=false; serr.style.display='block'; sbtn.disabled=false; sbtn.textContent='Log'; }
+    }, 20000);
+  });
+  ssink.addEventListener('load', function(){
+    if(!spending) return;
+    spending=false;
+    sok.style.display='block'; sbtn.disabled=false; sbtn.textContent='Log';
+    try{
+      var hist=JSON.parse(localStorage.getItem('hh_steps_history')||'[]');
+      var iso=yestIso();
+      hist=hist.filter(function(e){return e.date!==iso;});
+      hist.push({date:iso, steps:parseInt(sval.value,10)});
+      localStorage.setItem('hh_steps_history', JSON.stringify(hist.slice(-30)));
+    }catch(e){}
+    sval.value='';
+    renderSteps();
+  });
+  function renderSteps(){
+    fetch('steps.json?t='+Date.now())
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .catch(function(){ return []; })
+      .then(function(server){
+        var entries = Array.isArray(server) ? server.slice() : [];
+        var have={};
+        entries.forEach(function(e){ have[e.date]=true; });
+        try{
+          JSON.parse(localStorage.getItem('hh_steps_history')||'[]').forEach(function(e){
+            if(!have[e.date]){ entries.push({date:e.date, steps:e.steps}); }
+          });
+        }catch(e){}
+        var tbl=document.getElementById('stable'), empty=document.getElementById('sempty');
+        if(!entries.length){ tbl.innerHTML=''; empty.style.display='block'; return; }
+        empty.style.display='none';
+        var weeks={};
+        entries.forEach(function(e){
+          var d=new Date(e.date+'T00:00:00');
+          var mon=new Date(d); mon.setDate(d.getDate()-((d.getDay()+6)%7));
+          var key=mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');
+          (weeks[key]=weeks[key]||[]).push(e.steps);
+        });
+        var keys=Object.keys(weeks).sort();
+        var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var nowD=new Date();
+        var curMon=new Date(nowD); curMon.setDate(nowD.getDate()-((nowD.getDay()+6)%7));
+        var curKey=curMon.getFullYear()+'-'+String(curMon.getMonth()+1).padStart(2,'0')+'-'+String(curMon.getDate()).padStart(2,'0');
+        var html='';
+        keys.slice(-12).reverse().forEach(function(k){
+          var v=weeks[k];
+          var avg=Math.round(v.reduce(function(a,b){return a+b;},0)/v.length);
+          var d=new Date(k+'T00:00:00');
+          var label=(k===curKey) ? 'This week ('+v.length+(v.length===1?' log':' logs')+')'
+                                 : 'Week of '+d.getDate()+' '+months[d.getMonth()];
+          var hit = STEP_TARGET>0 && avg>=STEP_TARGET;
+          html+='<div class="wrow'+(k===curKey?' wtoday':'')+'" style="border-bottom:none; padding-bottom:2px;"><span class="wdate">'+label+
+                '</span><span><span class="wkg">'+avg.toLocaleString()+'</span>'+
+                (hit?'<span class="wdelta">\u2713 target</span>':'')+'</span></div>';
+          if(STEP_TARGET>0){
+            var pct=Math.min(100, Math.round(avg/STEP_TARGET*100));
+            html+='<div class="sbar"><i style="width:'+pct+'%"></i></div>';
+          }
+        });
+        tbl.innerHTML=html;
+      });
+  }
+  renderSteps();
 })();
 </script>
 
