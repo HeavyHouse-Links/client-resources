@@ -223,7 +223,7 @@
       wsink=document.getElementById('wsink'), wpending=false;
   function showLast(){
     try{
-      var d=JSON.parse(localStorage.getItem('hh_last_weigh')||'null');
+      var d=JSON.parse(localStorage.getItem('hh_last_weigh_sian-c-fe8ed8')||'null');
       if(d) wlast.textContent='Last logged: '+d.kg+' kg on '+d.day;
     }catch(e){}
   }
@@ -242,13 +242,13 @@
     wok.style.display='block'; wbtn.disabled=false; wbtn.textContent='Log';
     try{
       var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      localStorage.setItem('hh_last_weigh', JSON.stringify({kg:wval.value, day:days[new Date().getDay()]}));
+      localStorage.setItem('hh_last_weigh_sian-c-fe8ed8', JSON.stringify({kg:wval.value, day:days[new Date().getDay()]}));
       var now=new Date();
       var iso=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
-      var hist=JSON.parse(localStorage.getItem('hh_weigh_history')||'[]');
+      var hist=JSON.parse(localStorage.getItem('hh_weigh_history_sian-c-fe8ed8')||'[]');
       hist=hist.filter(function(e){return e.date!==iso;});
       hist.push({date:iso, kg:parseFloat(wval.value)});
-      localStorage.setItem('hh_weigh_history', JSON.stringify(hist.slice(-30)));
+      localStorage.setItem('hh_weigh_history_sian-c-fe8ed8', JSON.stringify(hist.slice(-30)));
     }catch(e){}
     showLast(); wval.value='';
     renderTracker();
@@ -267,7 +267,7 @@
         var have = {};
         entries.forEach(function(e){ have[e.date]=true; });
         try{
-          JSON.parse(localStorage.getItem('hh_weigh_history')||'[]').forEach(function(e){
+          JSON.parse(localStorage.getItem('hh_weigh_history_sian-c-fe8ed8')||'[]').forEach(function(e){
             if(!have[e.date]){ entries.push({date:e.date, kg:e.kg}); }
           });
         }catch(e){}
@@ -372,11 +372,11 @@
     spending=false;
     sok.style.display='block'; sbtn.disabled=false; sbtn.textContent='Log';
     try{
-      var hist=JSON.parse(localStorage.getItem('hh_steps_history')||'[]');
+      var hist=JSON.parse(localStorage.getItem('hh_steps_history_sian-c-fe8ed8')||'[]');
       var iso=yestIso();
       hist=hist.filter(function(e){return e.date!==iso;});
       hist.push({date:iso, steps:parseInt(sval.value,10)});
-      localStorage.setItem('hh_steps_history', JSON.stringify(hist.slice(-30)));
+      localStorage.setItem('hh_steps_history_sian-c-fe8ed8', JSON.stringify(hist.slice(-30)));
     }catch(e){}
     sval.value='';
     renderSteps();
@@ -390,7 +390,7 @@
         var have={};
         entries.forEach(function(e){ have[e.date]=true; });
         try{
-          JSON.parse(localStorage.getItem('hh_steps_history')||'[]').forEach(function(e){
+          JSON.parse(localStorage.getItem('hh_steps_history_sian-c-fe8ed8')||'[]').forEach(function(e){
             if(!have[e.date]){ entries.push({date:e.date, steps:e.steps}); }
           });
         }catch(e){}
