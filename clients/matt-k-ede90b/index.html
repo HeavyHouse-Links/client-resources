@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Heavy House">
+<link rel="apple-touch-icon" href="../../assets/hh-logo.png">
+<link rel="icon" href="../../assets/hh-logo.png">
+<title>Heavy House</title>
+<style>
+  :root{
+    --ink:#111111;
+    --mid:#808080;
+    --pale:#d9d9d9;
+    --card-bg:#ededed;
+    --muted:#7f7f7f;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    --shadow:0 8px 24px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    background:#f4f4f4; color:var(--ink);
+    padding:20px 16px calc(40px + env(safe-area-inset-bottom));
+    max-width:520px; margin:0 auto;
+  }
+  header{text-align:center; padding:18px 0 22px;}
+  header img{width:54px; height:54px; object-fit:contain;}
+  .brand{font-size:20px; font-weight:800; letter-spacing:0.14em; margin-top:8px;}
+  .client{font-size:14px; color:var(--mid); margin-top:4px; font-weight:600;}
+  .goal{font-size:12px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:0.08em;}
+  .card{
+    background:#ffffff; border-radius:var(--radius-lg); box-shadow:var(--shadow);
+    padding:22px 20px; margin-bottom:16px;
+  }
+  .card h2{font-size:15px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;}
+  .sched{font-size:12.5px; color:var(--muted); margin-top:5px; line-height:1.5;}
+  .row{display:flex; gap:10px; margin-top:14px;}
+  input[type=number]{
+    flex:1; min-width:0; font-size:26px; font-weight:700; text-align:center;
+    padding:12px 10px; border:1.5px solid var(--pale); border-radius:var(--radius-md);
+    background:var(--card-bg); color:var(--ink); -webkit-appearance:none; appearance:none;
+  }
+  input[type=number]:focus{outline:none; border-color:var(--ink);}
+  .btn{
+    display:block; width:100%; border:none; cursor:pointer; text-align:center;
+    background:var(--ink); color:#fff; font-size:14px; font-weight:800;
+    letter-spacing:0.08em; text-transform:uppercase; padding:15px 12px;
+    border-radius:var(--radius-md); text-decoration:none;
+    font-family:inherit;
+  }
+  .btn:active{opacity:0.75;}
+  .btn[disabled]{background:var(--mid); cursor:default;}
+  .btn.secondary{background:#fff; color:var(--ink); border:1.5px solid var(--ink);}
+  .row .btn{width:auto; flex:0 0 auto; padding:15px 22px;}
+  .ok{
+    display:none; margin-top:12px; font-size:13.5px; font-weight:700;
+    text-align:center; color:var(--ink); background:var(--card-bg);
+    border-radius:var(--radius-sm); padding:11px;
+  }
+  .err{
+    display:none; margin-top:12px; font-size:13px; font-weight:600;
+    text-align:center; color:#8a1f1f; background:#f7e9e9;
+    border-radius:var(--radius-sm); padding:11px;
+  }
+  .last{font-size:12px; color:var(--muted); margin-top:10px; text-align:center;}
+  .filecount{font-size:13px; color:var(--mid); font-weight:600; margin-top:10px; text-align:center;}
+  .gap{margin-top:14px;}
+  footer{text-align:center; font-size:11px; color:var(--muted); margin-top:26px; line-height:1.6;}
+  iframe.sink{display:none;}
+  .banner{
+    display:none; background:var(--ink); color:#fff; text-align:center;
+    font-size:13px; font-weight:800; letter-spacing:0.06em;
+    padding:13px 14px; border-radius:var(--radius-md); margin-bottom:16px;
+  }
+  .card.due{border:2px solid var(--ink);}
+  img.template{
+    display:block; width:100%; border-radius:var(--radius-md);
+    margin-top:14px;
+  }
+  .tips{font-size:12px; color:var(--muted); margin-top:10px; line-height:1.55;}
+  .sbar{height:4px; background:var(--pale); border-radius:2px; margin:2px 2px 8px;}
+  .sbar i{display:block; height:100%; background:var(--ink); border-radius:2px;}
+  .wrow{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:9px 2px; border-bottom:0.5px solid var(--pale);
+    font-size:14px;
+  }
+  .wrow:last-child{border-bottom:none;}
+  .wdate{color:var(--muted); font-size:12.5px;}
+  .wkg{font-weight:800;}
+  .wdelta{font-size:11.5px; color:var(--muted); font-weight:600; margin-left:8px;}
+  .wtoday{background:var(--card-bg); border-radius:var(--radius-sm); padding:9px 10px;}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="../../assets/hh-logo.png" alt="Heavy House">
+  <div class="brand">HEAVY HOUSE</div>
+  <div class="client">Matt Kocaj</div>
+  <div class="goal">Fat Loss & Rehabilitation</div>
+</header>
+
+<div class="banner" id="fribanner">CHECK IN DAY. Two minutes, knock it out below.</div>
+
+<!-- WEIGH IN -->
+<div class="card">
+  <h2>Log Weigh In</h2>
+  <p class="sched">Every morning, fasted. Before any food or liquid.</p>
+  <form id="wform" action="https://submit.jotform.com/submit/262090628219054" method="POST" target="wsink">
+    <input type="hidden" name="formID" value="262090628219054">
+    <input type="hidden" name="simple_spc" value="262090628219054-262090628219054">
+    <input type="hidden" name="q3_q3_textbox1" value="Matt Kocaj">
+    <div class="row">
+      <input type="number" name="q24_weightkg" id="wval" inputmode="decimal" step="0.1" min="30" max="300" placeholder="0.0" required>
+      <button class="btn" id="wbtn" type="submit">Log</button>
+    </div>
+  </form>
+  <div class="ok" id="wok">Logged. Nice work.</div>
+  <div class="err" id="werr">That did not send. Check your signal and try again.</div>
+  <div class="last" id="wlast"></div>
+</div>
+
+<!-- WEIGHT TRACKER -->
+<div class="card">
+  <h2>Weight Tracker</h2>
+  <p class="sched" id="trend"></p>
+  <div id="wtable"></div>
+  <div class="filecount" id="wempty">Your history builds here from your first weigh-in.</div>
+</div>
+
+<!-- STEPS -->
+<div class="card">
+  <h2>Steps</h2>
+  <p class="sched" id="shead">Log yesterday's total each morning, straight off the watch.</p>
+  <form id="sform" action="https://submit.jotform.com/submit/262110814232039" method="POST" target="ssink">
+    <input type="hidden" name="formID" value="262110814232039">
+    <input type="hidden" name="simple_spc" value="262110814232039-262110814232039">
+    <input type="hidden" name="q3_q3_textbox1" value="Matt Kocaj">
+    <div class="row">
+      <input type="number" name="q24_stepsYesterday" id="sval" inputmode="numeric" step="1" min="0" max="150000" placeholder="0" required>
+      <button class="btn" id="sbtn" type="submit">Log</button>
+    </div>
+  </form>
+  <div class="ok" id="sok">Steps in. Keep moving.</div>
+  <div class="err" id="serr">That did not send. Check your signal and try again.</div>
+  <div id="stable" style="margin-top:12px;"></div>
+  <div class="filecount" id="sempty">Your weekly averages build here from your first log.</div>
+</div>
+
+<!-- PHOTOS -->
+<div class="card">
+  <h2>Check In Photos</h2>
+  <p class="sched">Every Saturday morning, fasted. Before any food or liquid. Front, side and back.</p>
+  <img class="template" src="../../progress-photos/template-male.jpg" alt="Photo pose template: front, side, back">
+  <p class="tips">Match the template. Same spot, same light, phone at chest height, stand relaxed. Do not flex or suck in, honest beats flattering.</p>
+  <form id="pform" action="https://submit.jotform.com/submit/262091087523052" method="POST" target="psink" enctype="multipart/form-data">
+    <input type="hidden" name="formID" value="262091087523052">
+    <input type="hidden" name="simple_spc" value="262091087523052-262091087523052">
+    <input type="hidden" name="q3_q3_textbox1" value="Matt Kocaj">
+    <input type="file" name="q24_yourPhotos[]" id="pfiles" accept="image/*" multiple hidden>
+    <div class="gap"><button type="button" class="btn secondary" id="pickbtn">Choose Photos</button></div>
+    <div class="filecount" id="pcount"></div>
+    <div class="gap"><button class="btn" id="pbtn" type="submit" style="display:none;">Upload</button></div>
+  </form>
+  <div class="ok" id="pok">Photos in. Good stuff.</div>
+  <div class="err" id="perr">Upload did not send. Check your signal and try again.</div>
+</div>
+
+<!-- WEEKLY CHECK IN -->
+<div class="card" id="cicard">
+  <h2>Weekly Check In</h2>
+  <p class="sched">Every Friday. Two minutes, be honest with it.</p>
+  <div class="gap"><a class="btn" href="https://form.jotform.com/262090491834055?q3_textbox1=Matt%20Kocaj">Open Check In</a></div>
+</div>
+
+<!-- MEAL PLAN -->
+<div class="card">
+  <h2>Your Meal Plan</h2>
+  <p class="sched" id="plannote">Your plan lives here. Revisit it any time.</p>
+  <div class="gap"><a class="btn secondary" id="planbtn" href="#" style="display:none;">Open Meal Plan</a></div>
+  <div class="filecount" id="plansoon">Being built. It will appear right here.</div>
+</div>
+
+<!-- GUIDES -->
+<div class="card">
+  <h2>Guides</h2>
+  <p class="sched">The Heavy House playbook. Eating out, alcohol, niggles, protein on the go and more.</p>
+  <div class="gap"><a class="btn secondary" href="../../">Open The Hub</a></div>
+</div>
+
+<!-- MESSAGE LUKE -->
+<div class="card">
+  <h2>Need Anything?</h2>
+  <p class="sched">Questions, a rough day, plan not working. One tap away.</p>
+  <div class="gap"><a class="btn" href="https://api.whatsapp.com/send?phone=61404595014">Message Luke on WhatsApp</a></div>
+</div>
+
+<footer>
+  Heavy House &middot; Personal page for Matt Kocaj
+</footer>
+
+<iframe class="sink" name="wsink" id="wsink"></iframe>
+<iframe class="sink" name="psink" id="psink"></iframe>
+<iframe class="sink" name="ssink" id="ssink"></iframe>
+
+<script>
+(function(){
+  // ---- Friday check-in reminder: banner + highlighted card, all day Friday ----
+  if(new Date().getDay() === 5){
+    document.getElementById('fribanner').style.display='block';
+    document.getElementById('cicard').classList.add('due');
+  }
+  // ---- weigh in ----
+  var wform=document.getElementById('wform'), wbtn=document.getElementById('wbtn'),
+      wok=document.getElementById('wok'), werr=document.getElementById('werr'),
+      wval=document.getElementById('wval'), wlast=document.getElementById('wlast'),
+      wsink=document.getElementById('wsink'), wpending=false;
+  function showLast(){
+    try{
+      var d=JSON.parse(localStorage.getItem('hh_last_weigh')||'null');
+      if(d) wlast.textContent='Last logged: '+d.kg+' kg on '+d.day;
+    }catch(e){}
+  }
+  showLast();
+  wform.addEventListener('submit', function(){
+    wbtn.disabled=true; wbtn.textContent='...';
+    wok.style.display='none'; werr.style.display='none';
+    wpending=true;
+    setTimeout(function(){
+      if(wpending){ wpending=false; werr.style.display='block'; wbtn.disabled=false; wbtn.textContent='Log'; }
+    }, 20000);
+  });
+  wsink.addEventListener('load', function(){
+    if(!wpending) return;
+    wpending=false;
+    wok.style.display='block'; wbtn.disabled=false; wbtn.textContent='Log';
+    try{
+      var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      localStorage.setItem('hh_last_weigh', JSON.stringify({kg:wval.value, day:days[new Date().getDay()]}));
+      var now=new Date();
+      var iso=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+      var hist=JSON.parse(localStorage.getItem('hh_weigh_history')||'[]');
+      hist=hist.filter(function(e){return e.date!==iso;});
+      hist.push({date:iso, kg:parseFloat(wval.value)});
+      localStorage.setItem('hh_weigh_history', JSON.stringify(hist.slice(-30)));
+    }catch(e){}
+    showLast(); wval.value='';
+    renderTracker();
+  });
+
+  // ---- weight tracker: WEEKLY AVERAGES from weights.json (verified ledger,
+  // updated each morning) merged with local same-day logs so the current week's
+  // running average moves the moment a weigh-in is logged. Daily numbers are
+  // noise; the week average is the signal. ----
+  function renderTracker(){
+    fetch('weights.json?t='+Date.now())
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .catch(function(){ return []; })
+      .then(function(server){
+        var entries = Array.isArray(server) ? server.slice() : [];
+        var have = {};
+        entries.forEach(function(e){ have[e.date]=true; });
+        try{
+          JSON.parse(localStorage.getItem('hh_weigh_history')||'[]').forEach(function(e){
+            if(!have[e.date]){ entries.push({date:e.date, kg:e.kg}); }
+          });
+        }catch(e){}
+        var tbl=document.getElementById('wtable'), empty=document.getElementById('wempty'),
+            trend=document.getElementById('trend');
+        if(!entries.length){ tbl.innerHTML=''; empty.style.display='block'; trend.textContent=''; return; }
+        empty.style.display='none';
+        // group by week starting Monday
+        var weeks={};
+        entries.forEach(function(e){
+          var d=new Date(e.date+'T00:00:00');
+          var mon=new Date(d);
+          mon.setDate(d.getDate()-((d.getDay()+6)%7));
+          var key=mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');
+          (weeks[key]=weeks[key]||[]).push(e.kg);
+        });
+        var keys=Object.keys(weeks).sort();
+        var avgs=keys.map(function(k){
+          var v=weeks[k];
+          return {week:k, n:v.length,
+                  avg:Math.round(v.reduce(function(a,b){return a+b;},0)/v.length*10)/10};
+        });
+        var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var nowD=new Date();
+        var curMon=new Date(nowD); curMon.setDate(nowD.getDate()-((nowD.getDay()+6)%7));
+        var curKey=curMon.getFullYear()+'-'+String(curMon.getMonth()+1).padStart(2,'0')+'-'+String(curMon.getDate()).padStart(2,'0');
+        // headline: change between first and latest week averages
+        if(avgs.length>=2){
+          var diff=Math.round((avgs[avgs.length-1].avg-avgs[0].avg)*10)/10;
+          trend.textContent = diff<0 ? 'Down '+Math.abs(diff)+' kg since your first week.' :
+            diff>0 ? 'Up '+diff+' kg since your first week.' : 'Holding steady since your first week.';
+        } else {
+          trend.textContent='Week one underway. The average is what matters, not the daily number.';
+        }
+        var html='';
+        avgs.slice(-12).reverse().forEach(function(w,i,arr){
+          var d=new Date(w.week+'T00:00:00');
+          var label=(w.week===curKey) ? 'This week ('+w.n+(w.n===1?' log':' logs')+' so far)'
+                                      : 'Week of '+d.getDate()+' '+months[d.getMonth()];
+          var prev=arr[i+1];
+          var delta='';
+          if(prev){
+            var dv=Math.round((w.avg-prev.avg)*10)/10;
+            if(dv!==0){ delta='<span class="wdelta">'+(dv>0?'+':'')+dv+'</span>'; }
+          }
+          html+='<div class="wrow'+(w.week===curKey?' wtoday':'')+'"><span class="wdate">'+label+
+                '</span><span><span class="wkg">'+w.avg.toFixed(1)+' kg</span>'+delta+'</span></div>';
+        });
+        tbl.innerHTML=html;
+      });
+  }
+  renderTracker();
+
+  // ---- photos ----
+  var pform=document.getElementById('pform'), pfiles=document.getElementById('pfiles'),
+      pickbtn=document.getElementById('pickbtn'), pbtn=document.getElementById('pbtn'),
+      pcount=document.getElementById('pcount'), pok=document.getElementById('pok'),
+      perr=document.getElementById('perr'), psink=document.getElementById('psink'), ppending=false;
+  pickbtn.addEventListener('click', function(){ pfiles.click(); });
+  pfiles.addEventListener('change', function(){
+    var n=pfiles.files.length;
+    pcount.textContent = n ? (n+(n===1?' photo':' photos')+' ready') : '';
+    pbtn.style.display = n ? 'block' : 'none';
+    pok.style.display='none'; perr.style.display='none';
+  });
+  pform.addEventListener('submit', function(){
+    pbtn.disabled=true; pbtn.textContent='Uploading...';
+    pok.style.display='none'; perr.style.display='none';
+    ppending=true;
+    setTimeout(function(){
+      if(ppending){ ppending=false; perr.style.display='block'; pbtn.disabled=false; pbtn.textContent='Upload'; }
+    }, 120000);
+  });
+  psink.addEventListener('load', function(){
+    if(!ppending) return;
+    ppending=false;
+    pok.style.display='block'; pbtn.disabled=false; pbtn.textContent='Upload';
+    pbtn.style.display='none'; pcount.textContent=''; pform.reset();
+  });
+
+  // ---- steps: log yesterday's total; weekly averages vs optional target ----
+  var STEP_TARGET = 0;  // 0 = no target set yet; Luke sets per client
+  var sform=document.getElementById('sform'), sbtn=document.getElementById('sbtn'),
+      sok=document.getElementById('sok'), serr=document.getElementById('serr'),
+      sval=document.getElementById('sval'), ssink=document.getElementById('ssink'),
+      shead=document.getElementById('shead'), spending=false;
+  if(STEP_TARGET>0){ shead.textContent='Target: '+STEP_TARGET.toLocaleString()+' a day. Log yesterday\'s total each morning.'; }
+  function yestIso(){
+    var d=new Date(); d.setDate(d.getDate()-1);
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  sform.addEventListener('submit', function(){
+    sbtn.disabled=true; sbtn.textContent='...';
+    sok.style.display='none'; serr.style.display='none';
+    spending=true;
+    setTimeout(function(){
+      if(spending){ spending=false; serr.style.display='block'; sbtn.disabled=false; sbtn.textContent='Log'; }
+    }, 20000);
+  });
+  ssink.addEventListener('load', function(){
+    if(!spending) return;
+    spending=false;
+    sok.style.display='block'; sbtn.disabled=false; sbtn.textContent='Log';
+    try{
+      var hist=JSON.parse(localStorage.getItem('hh_steps_history')||'[]');
+      var iso=yestIso();
+      hist=hist.filter(function(e){return e.date!==iso;});
+      hist.push({date:iso, steps:parseInt(sval.value,10)});
+      localStorage.setItem('hh_steps_history', JSON.stringify(hist.slice(-30)));
+    }catch(e){}
+    sval.value='';
+    renderSteps();
+  });
+  function renderSteps(){
+    fetch('steps.json?t='+Date.now())
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .catch(function(){ return []; })
+      .then(function(server){
+        var entries = Array.isArray(server) ? server.slice() : [];
+        var have={};
+        entries.forEach(function(e){ have[e.date]=true; });
+        try{
+          JSON.parse(localStorage.getItem('hh_steps_history')||'[]').forEach(function(e){
+            if(!have[e.date]){ entries.push({date:e.date, steps:e.steps}); }
+          });
+        }catch(e){}
+        var tbl=document.getElementById('stable'), empty=document.getElementById('sempty');
+        if(!entries.length){ tbl.innerHTML=''; empty.style.display='block'; return; }
+        empty.style.display='none';
+        var weeks={};
+        entries.forEach(function(e){
+          var d=new Date(e.date+'T00:00:00');
+          var mon=new Date(d); mon.setDate(d.getDate()-((d.getDay()+6)%7));
+          var key=mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');
+          (weeks[key]=weeks[key]||[]).push(e.steps);
+        });
+        var keys=Object.keys(weeks).sort();
+        var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var nowD=new Date();
+        var curMon=new Date(nowD); curMon.setDate(nowD.getDate()-((nowD.getDay()+6)%7));
+        var curKey=curMon.getFullYear()+'-'+String(curMon.getMonth()+1).padStart(2,'0')+'-'+String(curMon.getDate()).padStart(2,'0');
+        var html='';
+        keys.slice(-12).reverse().forEach(function(k){
+          var v=weeks[k];
+          var avg=Math.round(v.reduce(function(a,b){return a+b;},0)/v.length);
+          var d=new Date(k+'T00:00:00');
+          var label=(k===curKey) ? 'This week ('+v.length+(v.length===1?' log':' logs')+')'
+                                 : 'Week of '+d.getDate()+' '+months[d.getMonth()];
+          var hit = STEP_TARGET>0 && avg>=STEP_TARGET;
+          html+='<div class="wrow'+(k===curKey?' wtoday':'')+'" style="border-bottom:none; padding-bottom:2px;"><span class="wdate">'+label+
+                '</span><span><span class="wkg">'+avg.toLocaleString()+'</span>'+
+                (hit?'<span class="wdelta">\u2713 target</span>':'')+'</span></div>';
+          if(STEP_TARGET>0){
+            var pct=Math.min(100, Math.round(avg/STEP_TARGET*100));
+            html+='<div class="sbar"><i style="width:'+pct+'%"></i></div>';
+          }
+        });
+        tbl.innerHTML=html;
+      });
+  }
+  renderSteps();
+})();
+</script>
+
+</body>
+</html>
