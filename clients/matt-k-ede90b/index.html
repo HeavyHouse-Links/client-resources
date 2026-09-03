@@ -349,12 +349,18 @@
   });
 
   // ---- steps: log yesterday's total; weekly averages vs optional target ----
-  var STEP_TARGET = 0;  // 0 = no target set yet; Luke sets per client
+  var STEP_TARGET = 7000;  // daily step target
+  var STEP_TARGET_FROM = '2026-09-07';  // target applies from this Monday
   var sform=document.getElementById('sform'), sbtn=document.getElementById('sbtn'),
       sok=document.getElementById('sok'), serr=document.getElementById('serr'),
       sval=document.getElementById('sval'), ssink=document.getElementById('ssink'),
       shead=document.getElementById('shead'), spending=false;
-  if(STEP_TARGET>0){ shead.textContent='Target: '+STEP_TARGET.toLocaleString()+' a day. Log yesterday\'s total each morning.'; }
+  if(STEP_TARGET>0){
+    var tIso=new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2,'0')+'-'+String(new Date().getDate()).padStart(2,'0');
+    shead.textContent = (tIso < STEP_TARGET_FROM)
+      ? 'Target: '+STEP_TARGET.toLocaleString()+' a day, starts Monday 7 September. Log yesterday\'s total each morning.'
+      : 'Target: '+STEP_TARGET.toLocaleString()+' a day. Log yesterday\'s total each morning.';
+  }
   function yestIso(){
     var d=new Date(); d.setDate(d.getDate()-1);
     return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -416,11 +422,12 @@
           var d=new Date(k+'T00:00:00');
           var label=(k===curKey) ? 'This week ('+v.length+(v.length===1?' log':' logs')+')'
                                  : 'Week of '+d.getDate()+' '+months[d.getMonth()];
-          var hit = STEP_TARGET>0 && avg>=STEP_TARGET;
+          var onTarget = STEP_TARGET>0 && k >= STEP_TARGET_FROM;
+          var hit = onTarget && avg>=STEP_TARGET;
           html+='<div class="wrow'+(k===curKey?' wtoday':'')+'" style="border-bottom:none; padding-bottom:2px;"><span class="wdate">'+label+
                 '</span><span><span class="wkg">'+avg.toLocaleString()+'</span>'+
                 (hit?'<span class="wdelta">\u2713 target</span>':'')+'</span></div>';
-          if(STEP_TARGET>0){
+          if(onTarget){
             var pct=Math.min(100, Math.round(avg/STEP_TARGET*100));
             html+='<div class="sbar"><i style="width:'+pct+'%"></i></div>';
           }
