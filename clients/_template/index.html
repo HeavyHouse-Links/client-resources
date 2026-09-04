@@ -131,7 +131,10 @@
 <div class="card">
   <h2>Weight Tracker</h2>
   <p class="sched" id="trend"></p>
+  <div id="goalbar"></div>
+  <svg id="spark" viewBox="0 0 300 46" preserveAspectRatio="none" style="width:100%; height:46px; display:none; margin:2px 0 8px;"></svg>
   <div id="wtable"></div>
+  <p class="filecount" id="streak" style="margin-top:8px;"></p>
   <div class="filecount" id="wempty">Your history builds here from your first weigh-in.</div>
 </div>
 
@@ -212,8 +215,15 @@
 
 <script>
 (function(){
+  var PAUSED = '';  // '' = active; short note like 'back Monday 7 September' pauses the page
+  // ---- paused state: soften the page, no nagging while away ----
+  if(typeof PAUSED!=='undefined' && PAUSED){
+    var fb=document.getElementById('fribanner');
+    fb.textContent='ON A BREAK. Nothing to log, '+PAUSED+'.';
+    fb.style.display='block';
+  }
   // ---- Friday check-in reminder: banner + highlighted card, all day Friday ----
-  if(new Date().getDay() === 5){
+  if(new Date().getDay() === 5 && !(typeof PAUSED!=='undefined' && PAUSED)){
     document.getElementById('fribanner').style.display='block';
     document.getElementById('cicard').classList.add('due');
   }
@@ -296,13 +306,58 @@
         var curMon=new Date(nowD); curMon.setDate(nowD.getDate()-((nowD.getDay()+6)%7));
         var curKey=curMon.getFullYear()+'-'+String(curMon.getMonth()+1).padStart(2,'0')+'-'+String(curMon.getDate()).padStart(2,'0');
         // headline: change between first and latest week averages
+        var latestAvg=avgs[avgs.length-1].avg, firstAvg=avgs[0].avg;
         if(avgs.length>=2){
-          var diff=Math.round((avgs[avgs.length-1].avg-avgs[0].avg)*10)/10;
+          var diff=Math.round((latestAvg-firstAvg)*10)/10;
           trend.textContent = diff<0 ? 'Down '+Math.abs(diff)+' kg since your first week.' :
             diff>0 ? 'Up '+diff+' kg since your first week.' : 'Holding steady since your first week.';
         } else {
           trend.textContent='Week one underway. The average is what matters, not the daily number.';
         }
+        // goal progress
+        var gb=document.getElementById('goalbar');
+        if(typeof WEIGHT_GOAL!=='undefined' && WEIGHT_GOAL>0 && avgs.length){
+          var togo=Math.round(Math.abs(latestAvg-WEIGHT_GOAL)*10)/10;
+          var total=Math.abs(firstAvg-WEIGHT_GOAL);
+          var done=total>0 ? Math.max(0, Math.min(100, Math.round(Math.abs(firstAvg-latestAvg)/total*100))) : 100;
+          var reached=(firstAvg>WEIGHT_GOAL && latestAvg<=WEIGHT_GOAL)||(firstAvg<WEIGHT_GOAL && latestAvg>=WEIGHT_GOAL);
+          gb.innerHTML='<div class="wrow" style="border-bottom:none; padding-bottom:2px;"><span class="wdate">Goal: '+WEIGHT_GOAL.toFixed(1)+' kg</span><span class="wkg">'+
+            (reached ? 'Goal reached' : togo.toFixed(1)+' kg to go')+'</span></div>'+
+            '<div class="sbar"><i style="width:'+(reached?100:done)+'%"></i></div>';
+        } else { gb.innerHTML=''; }
+        // sparkline over weekly averages
+        var sp=document.getElementById('spark');
+        var line=avgs.slice(-12);
+        if(line.length>=3){
+          var vals=line.map(function(w){return w.avg;});
+          var lo=Math.min.apply(null, vals), hi=Math.max.apply(null, vals);
+          if(typeof WEIGHT_GOAL!=='undefined' && WEIGHT_GOAL>0){ lo=Math.min(lo, WEIGHT_GOAL); }
+          var padv=(hi-lo)*0.2 || 0.5; lo-=padv; hi+=padv;
+          var pts=vals.map(function(v,i){
+            var x=6+(288*(i/(vals.length-1)));
+            var y=40-(34*((v-lo)/(hi-lo)));
+            return [Math.round(x*10)/10, Math.round(y*10)/10];
+          });
+          var svg='';
+          if(typeof WEIGHT_GOAL!=='undefined' && WEIGHT_GOAL>0 && WEIGHT_GOAL>=lo && WEIGHT_GOAL<=hi){
+            var gy=Math.round((40-(34*((WEIGHT_GOAL-lo)/(hi-lo))))*10)/10;
+            svg+='<line x1="6" y1="'+gy+'" x2="294" y2="'+gy+'" stroke="var(--pale)" stroke-width="1" stroke-dasharray="4 4"/>';
+          }
+          svg+='<polyline fill="none" stroke="var(--fg)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="'+pts.map(function(p){return p[0]+','+p[1];}).join(' ')+'"/>';
+          pts.forEach(function(p,i){
+            svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i===pts.length-1?3.4:2)+'" fill="var(--fg)"/>';
+          });
+          sp.innerHTML=svg; sp.style.display='block';
+        } else { sp.style.display='none'; }
+        // logging streak: consecutive days with a weigh-in, today optional
+        var st=document.getElementById('streak');
+        var dset={}; entries.forEach(function(e){ dset[e.date]=true; });
+        var run=0, cur=new Date();
+        var isoOf=function(dd){ return dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0'); };
+        if(!dset[isoOf(cur)]){ cur.setDate(cur.getDate()-1); }
+        while(dset[isoOf(cur)]){ run++; cur.setDate(cur.getDate()-1); }
+        st.textContent = run>=3 ? run+' days logged in a row. Keep the chain going.' : '';
+        st.style.display = run>=3 ? 'block' : 'none';
         var html='';
         avgs.slice(-12).reverse().forEach(function(w,i,arr){
           var d=new Date(w.week+'T00:00:00');
@@ -351,11 +406,19 @@
 
   // ---- steps: log yesterday's total; weekly averages vs optional target ----
   var STEP_TARGET = {{STEP_TARGET}};  // 0 = no target set yet; Luke sets per client
+  var STEP_TARGET_FROM = '';  // '' = from the start; 'YYYY-MM-DD' (a Monday) = target applies from that week
+  var WEIGHT_GOAL = 0;        // 0 = no goal set; e.g. 85 shows progress toward 85kg
   var sform=document.getElementById('sform'), sbtn=document.getElementById('sbtn'),
       sok=document.getElementById('sok'), serr=document.getElementById('serr'),
       sval=document.getElementById('sval'), ssink=document.getElementById('ssink'),
       shead=document.getElementById('shead'), spending=false;
-  if(STEP_TARGET>0){ shead.textContent='Target: '+STEP_TARGET.toLocaleString()+' a day. Log yesterday\'s total each morning.'; }
+  if(STEP_TARGET>0){
+    var tNow=new Date();
+    var tIso=tNow.getFullYear()+'-'+String(tNow.getMonth()+1).padStart(2,'0')+'-'+String(tNow.getDate()).padStart(2,'0');
+    shead.textContent = (STEP_TARGET_FROM && tIso < STEP_TARGET_FROM)
+      ? 'Target: '+STEP_TARGET.toLocaleString()+' a day, starting soon. Log yesterday\'s total each morning.'
+      : 'Target: '+STEP_TARGET.toLocaleString()+' a day. Log yesterday\'s total each morning.';
+  }
   function yestIso(){
     var d=new Date(); d.setDate(d.getDate()-1);
     return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
@@ -417,11 +480,12 @@
           var d=new Date(k+'T00:00:00');
           var label=(k===curKey) ? 'This week ('+v.length+(v.length===1?' log':' logs')+')'
                                  : 'Week of '+d.getDate()+' '+months[d.getMonth()];
-          var hit = STEP_TARGET>0 && avg>=STEP_TARGET;
+          var onTarget = STEP_TARGET>0 && (!STEP_TARGET_FROM || k >= STEP_TARGET_FROM);
+          var hit = onTarget && avg>=STEP_TARGET;
           html+='<div class="wrow'+(k===curKey?' wtoday':'')+'" style="border-bottom:none; padding-bottom:2px;"><span class="wdate">'+label+
                 '</span><span><span class="wkg">'+avg.toLocaleString()+'</span>'+
                 (hit?'<span class="wdelta">\u2713 target</span>':'')+'</span></div>';
-          if(STEP_TARGET>0){
+          if(onTarget){
             var pct=Math.min(100, Math.round(avg/STEP_TARGET*100));
             html+='<div class="sbar"><i style="width:'+pct+'%"></i></div>';
           }
