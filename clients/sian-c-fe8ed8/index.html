@@ -132,7 +132,7 @@
   <h2>Weight Tracker</h2>
   <p class="sched" id="trend"></p>
   <div id="goalbar"></div>
-  <svg id="spark" viewBox="0 0 300 46" preserveAspectRatio="none" style="width:100%; height:46px; display:none; margin:2px 0 8px;"></svg>
+  <svg id="spark" viewBox="0 0 300 64" style="width:100%; height:auto; display:none; margin:2px 0 8px;"></svg>
   <div id="wtable"></div>
   <p class="filecount" id="streak" style="margin-top:8px;"></p>
   <div class="filecount" id="wempty">Your history builds here from your first weigh-in.</div>
@@ -331,21 +331,34 @@
           var vals=line.map(function(w){return w.avg;});
           var lo=Math.min.apply(null, vals), hi=Math.max.apply(null, vals);
           if(typeof WEIGHT_GOAL!=='undefined' && WEIGHT_GOAL>0){ lo=Math.min(lo, WEIGHT_GOAL); }
-          var padv=(hi-lo)*0.2 || 0.5; lo-=padv; hi+=padv;
+          var padv=(hi-lo)*0.25 || 0.5; lo-=padv; hi+=padv;
+          var X0=10, X1=250, Y0=14, Y1=56;
           var pts=vals.map(function(v,i){
-            var x=6+(288*(i/(vals.length-1)));
-            var y=40-(34*((v-lo)/(hi-lo)));
+            var x=X0+((X1-X0)*(i/(vals.length-1)));
+            var y=Y1-((Y1-Y0)*((v-lo)/(hi-lo)));
             return [Math.round(x*10)/10, Math.round(y*10)/10];
           });
+          var ptStr=pts.map(function(p){return p[0]+','+p[1];}).join(' ');
+          var last=pts[pts.length-1];
           var svg='';
+          svg+='<polygon fill="rgba(17,17,17,0.06)" points="'+X0+','+Y1+' '+ptStr+' '+last[0]+','+Y1+'"/>';
           if(typeof WEIGHT_GOAL!=='undefined' && WEIGHT_GOAL>0 && WEIGHT_GOAL>=lo && WEIGHT_GOAL<=hi){
-            var gy=Math.round((40-(34*((WEIGHT_GOAL-lo)/(hi-lo))))*10)/10;
-            svg+='<line x1="6" y1="'+gy+'" x2="294" y2="'+gy+'" stroke="var(--pale)" stroke-width="1" stroke-dasharray="4 4"/>';
+            var gy=Math.round((Y1-((Y1-Y0)*((WEIGHT_GOAL-lo)/(hi-lo))))*10)/10;
+            svg+='<line x1="'+X0+'" y1="'+gy+'" x2="290" y2="'+gy+'" stroke="var(--pale)" stroke-width="1" stroke-dasharray="4 4"/>';
+            svg+='<text x="290" y="'+(gy-3)+'" text-anchor="end" font-size="8" fill="var(--muted)">goal '+WEIGHT_GOAL.toFixed(1)+'</text>';
           }
-          svg+='<polyline fill="none" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="'+pts.map(function(p){return p[0]+','+p[1];}).join(' ')+'"/>';
+          svg+='<polyline fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="'+ptStr+'"/>';
           pts.forEach(function(p,i){
-            svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i===pts.length-1?3.4:2)+'" fill="var(--ink)"/>';
+            if(i===pts.length-1){
+              svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4" fill="var(--ink)"/>';
+              svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="6.5" fill="none" stroke="var(--pale)" stroke-width="1.5"/>';
+            } else {
+              svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="2.2" fill="var(--mid)"/>';
+            }
           });
+          var lastLabelY=Math.max(Y0-3, last[1]-9);
+          svg+='<text x="'+Math.min(288, last[0]+8)+'" y="'+(last[1]+3)+'" font-size="10" font-weight="bold" fill="var(--ink)">'+vals[vals.length-1].toFixed(1)+'</text>';
+          svg+='<text x="'+pts[0][0]+'" y="'+Math.min(Y1+7, pts[0][1]+14)+'" font-size="8" fill="var(--muted)">'+vals[0].toFixed(1)+'</text>';
           sp.innerHTML=svg; sp.style.display='block';
         } else { sp.style.display='none'; }
         // logging streak: consecutive days with a weigh-in, today optional
