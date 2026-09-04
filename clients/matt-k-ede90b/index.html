@@ -155,6 +155,7 @@
   <div class="err" id="serr">That did not send. Check your signal and try again.</div>
   <div id="stable" style="margin-top:12px;"></div>
   <div class="filecount" id="sempty">Your weekly averages build here from your first log.</div>
+  <p class="filecount" id="sstreak" style="margin-top:8px;"></p>
 </div>
 
 <!-- PHOTOS -->
@@ -375,7 +376,7 @@
         var isoOf=function(dd){ return dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0'); };
         if(!dset[isoOf(cur)]){ cur.setDate(cur.getDate()-1); }
         while(dset[isoOf(cur)]){ run++; cur.setDate(cur.getDate()-1); }
-        st.textContent = run>=3 ? run+' days logged in a row. Keep the chain going.' : '';
+        st.textContent = run>=3 ? run+' days weighed in a row. Keep the chain going.' : '';
         st.style.display = run>=3 ? 'block' : 'none';
         var html='';
         avgs.slice(-12).reverse().forEach(function(w,i,arr){
@@ -509,6 +510,14 @@
           }
         });
         tbl.innerHTML=html;
+        var sst=document.getElementById('sstreak');
+        var sdset={}; entries.forEach(function(e){ sdset[e.date]=true; });
+        var srun=0, scur=new Date(); scur.setDate(scur.getDate()-1);
+        var sIso=function(dd){ return dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0'); };
+        if(!sdset[sIso(scur)]){ scur.setDate(scur.getDate()-1); }
+        while(sdset[sIso(scur)]){ srun++; scur.setDate(scur.getDate()-1); }
+        sst.textContent = srun>=3 ? srun+' days of steps logged in a row.' : '';
+        sst.style.display = srun>=3 ? 'block' : 'none';
       });
   }
   renderSteps();
