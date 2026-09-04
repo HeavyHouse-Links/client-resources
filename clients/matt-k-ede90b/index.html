@@ -351,7 +351,12 @@
           pts.forEach(function(p,i){
             var isLast=(i===pts.length-1);
             if(isLast){
-              svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4" fill="var(--ink)"/>';
+              var inProgress = line[line.length-1].week===curKey;
+              if(inProgress){
+                svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4" fill="var(--card, #ffffff)" stroke="var(--ink)" stroke-width="2"/>';
+              } else {
+                svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="4" fill="var(--ink)"/>';
+              }
               svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="6.5" fill="none" stroke="var(--pale)" stroke-width="1.5"/>';
             } else {
               svg+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="2.5" fill="var(--mid)"/>';
