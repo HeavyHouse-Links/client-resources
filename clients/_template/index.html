@@ -317,7 +317,7 @@
           trend.textContent='Week one underway. The average is what matters, not the daily number.';
         }
         // falling-week streak: consecutive COMPLETED weeks with a lower average than the week before
-        var doneAvgs = avgs.filter(function(w){ return w.week !== curKey; });
+        var doneAvgs = avgs.filter(function(w){ return w.week !== curKey && w.n >= 3; });
         var wkRun = 0;
         for (var i = doneAvgs.length - 1; i >= 1; i--) {
           if (doneAvgs[i].avg < doneAvgs[i-1].avg) { wkRun++; } else { break; }
