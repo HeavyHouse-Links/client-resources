@@ -437,14 +437,19 @@
   });
 
   // ---- steps: log yesterday's total; weekly averages vs optional target ----
-  var STEP_TARGET = 8500;  // set 9 Aug 2026 off her 7,174 baseline week
-  var STEP_TARGET_FROM = '';  // '' = from the start
+  var STEP_TARGET = 13500;  // raised 20 Sep 2026 off her 13,680/day fortnight (7-18 Sep)
+  var STEP_TARGET_FROM = '2026-09-21';  // target applies from this Monday
   var WEIGHT_GOAL = 0;        // 0 = no goal set
   var sform=document.getElementById('sform'), sbtn=document.getElementById('sbtn'),
       sok=document.getElementById('sok'), serr=document.getElementById('serr'),
       sval=document.getElementById('sval'), ssink=document.getElementById('ssink'),
       shead=document.getElementById('shead'), spending=false;
-  if(STEP_TARGET>0){ shead.textContent='Target: '+STEP_TARGET.toLocaleString()+' a day. Log yesterday\'s total each morning.'; }
+  if(STEP_TARGET>0){
+    var tIso=new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2,'0')+'-'+String(new Date().getDate()).padStart(2,'0');
+    shead.textContent = (tIso < STEP_TARGET_FROM)
+      ? 'Target: '+STEP_TARGET.toLocaleString()+' a day, starts Monday 21 September. Log yesterday\'s total each morning.'
+      : 'Target: '+STEP_TARGET.toLocaleString()+' a day. Log yesterday\'s total each morning.';
+  }
   function yestIso(){
     var d=new Date(); d.setDate(d.getDate()-1);
     return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
