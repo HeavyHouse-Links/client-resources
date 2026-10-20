@@ -165,32 +165,7 @@
   <p class="sched">Every Saturday morning, fasted, before any food or liquid. Photos first, questions after, one send.</p>
   <img class="template" src="../../progress-photos/template-male.jpg" alt="Photo pose template: front, side, back">
   <p class="tips">Match the template. Same spot, same light, phone at chest height, stand relaxed. Do not flex or suck in, honest beats flattering.</p>
-  <form id="pform" action="https://submit.jotform.com/submit/262090491834055" method="POST" target="psink" enctype="multipart/form-data">
-    <input type="hidden" name="formID" value="262090491834055">
-    <input type="hidden" name="simple_spc" value="262090491834055-262090491834055">
-    <input type="hidden" name="q3_q3_textbox1" value="Matt Kocaj">
-    <input type="file" name="q30_checkinPhotos[]" id="pfiles" accept="image/*" multiple hidden>
-    <div class="gap"><button type="button" class="btn secondary" id="pickbtn">Choose Photos</button></div>
-    <div class="filecount" id="pcount"></div>
-    <label class="cilab">Three wins from this week</label>
-    <textarea class="citext" name="q17_wins" rows="2" required></textarea>
-    <label class="cilab">Energy, sleep and stress this week?</label>
-    <select class="cisel" name="q21_energy" required><option value="" disabled selected>Pick one</option><option>1 (Not So Good)</option><option>2</option><option>3</option><option>4</option><option>5 (Feeling Great)</option></select>
-    <label class="cilab">What&#39;s your focus or challenge heading into next week?</label>
-    <textarea class="citext" name="q23_focus" rows="2" required></textarea>
-    <label class="cilab">How many days did you stick to your plan this week?</label>
-    <select class="cisel" name="q24_adherence" required><option value="" disabled selected>Pick one</option><option>7 (Every day)</option><option>5 to 6</option><option>3 to 4</option><option>2 or less</option></select>
-    <label class="cilab">Hunger between meals this week?</label>
-    <select class="cisel" name="q25_hunger" required><option value="" disabled selected>Pick one</option><option>1 (Starving all day)</option><option>2</option><option>3</option><option>4</option><option>5 (Barely think about food)</option></select>
-    <label class="cilab">Meal plan: anything you&#39;d change?</label>
-    <textarea class="citext" name="q28_mealplanFeedback" rows="2"></textarea>
-    <label class="cilab">Anything else you&#39;d like me to know from this week?</label>
-    <textarea class="citext" name="q29_anythingElse" rows="2"></textarea>
-    <div class="gap"><button class="btn" id="pbtn" type="submit">Send Check In</button></div>
-  </form>
-  <div class="ok" id="pok">Check in sent. Good stuff.</div>
-  <div class="err" id="perr">That did not send. Check your signal and try again.</div>
-  <div class="last" id="pilast"></div>
+  <div class="gap"><a class="btn" href="https://form.jotform.com/262090491834055?q3_textbox1=Matt%20Kocaj">Open Check In</a></div>
 </div>
 
 <!-- MEAL PLAN -->
@@ -219,7 +194,6 @@
 </footer>
 
 <iframe class="sink" name="wsink" id="wsink"></iframe>
-<iframe class="sink" name="psink" id="psink"></iframe>
 
 <script>
 (function(){
@@ -434,50 +408,6 @@
   }
   renderTracker();
 
-  // ---- weekly check in (photos + questions, one submit) ----
-  var SLUG=location.pathname.split('/').filter(Boolean).pop();
-  var pform=document.getElementById('pform'), pfiles=document.getElementById('pfiles'),
-      pickbtn=document.getElementById('pickbtn'), pbtn=document.getElementById('pbtn'),
-      pcount=document.getElementById('pcount'), pok=document.getElementById('pok'),
-      perr=document.getElementById('perr'), psink=document.getElementById('psink'), ppending=false;
-  var pilast=document.getElementById('pilast');
-  function showLastCheckin(){
-    try{
-      var d=JSON.parse(localStorage.getItem('hh_last_checkin_'+SLUG)||'null');
-      if(d) pilast.textContent='Last check in: '+d.when;
-    }catch(e){}
-  }
-  showLastCheckin();
-  pickbtn.addEventListener('click', function(){ pfiles.click(); });
-  pfiles.addEventListener('change', function(){
-    var n=pfiles.files.length;
-    pcount.textContent = n ? (n+(n===1?' photo':' photos')+' ready') : '';
-    pok.style.display='none'; perr.style.display='none';
-  });
-  pform.addEventListener('submit', function(){
-    pbtn.disabled=true; pbtn.textContent='Sending...';
-    pok.style.display='none'; perr.style.display='none';
-    ppending=true;
-    setTimeout(function(){
-      if(ppending){ ppending=false; perr.style.display='block'; pbtn.disabled=false; pbtn.textContent='Send Check In'; }
-    }, 120000);
-  });
-  psink.addEventListener('load', function(){
-    if(!ppending) return;
-    ppending=false;
-    var n=pfiles.files.length;
-    pok.textContent='Check in sent'+(n?(' with '+n+(n===1?' photo':' photos')):'')+'. Good stuff.';
-    pok.style.display='block'; pbtn.disabled=false; pbtn.textContent='Send Check In';
-    pcount.textContent='';
-    try{
-      var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      var dn=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      var now=new Date();
-      localStorage.setItem('hh_last_checkin_'+SLUG, JSON.stringify({when:dn[now.getDay()]+' '+now.getDate()+' '+mn[now.getMonth()]}));
-    }catch(e){}
-    pform.reset();
-    showLastCheckin();
-  });
 
   // ---- steps: log yesterday's total; weekly averages vs optional target ----
   var STEP_TARGET = 7000;  // daily step target
