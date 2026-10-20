@@ -57,6 +57,12 @@
   .btn:active{opacity:0.75;}
   .btn[disabled]{background:var(--mid); cursor:default;}
   .btn.secondary{background:#fff; color:var(--ink); border:1.5px solid var(--ink);}
+  .dayrow{display:flex; gap:4px; margin:6px 0 10px;}
+  .dchip{flex:1; text-align:center; font-size:10px; color:#a7a7ad; background:#f4f4f4; border-radius:8px; padding:5px 0;}
+  .dchip b{display:block; font-size:9px; font-weight:800; margin-bottom:1px; color:#c4c4c9;}
+  .dchip.got{background:#eef3fb; color:#1d1d1f;}
+  .dchip.hit{background:#e7f6ec; color:#1d7a3e;}
+  .dchip.got b,.dchip.hit b{color:inherit; opacity:.55;}
   .row .btn{width:auto; flex:0 0 auto; padding:15px 22px;}
   .ok{
     display:none; margin-top:12px; font-size:13.5px; font-weight:700;
@@ -111,14 +117,15 @@
 
 <!-- WEIGH IN -->
 <div class="card">
-  <h2>Log Weigh In</h2>
-  <p class="sched">Every morning, fasted. Before any food or liquid.</p>
+  <h2>Morning Log</h2>
+  <p class="sched">Every morning, fasted. Weight from the scales, steps are yesterday's total off the watch.</p>
   <form id="wform" action="https://submit.jotform.com/submit/262090628219054" method="POST" target="wsink">
     <input type="hidden" name="formID" value="262090628219054">
     <input type="hidden" name="simple_spc" value="262090628219054-262090628219054">
     <input type="hidden" name="q3_q3_textbox1" value="Matt Kocaj">
     <div class="row">
-      <input type="number" name="q24_weightkg" id="wval" inputmode="decimal" step="0.1" min="30" max="300" placeholder="0.0" required>
+      <input type="number" name="q24_weightkg" id="wval" inputmode="decimal" step="0.1" min="30" max="300" placeholder="Weight (kg)" required>
+      <input type="number" name="q25_stepsYesterday" id="wsval" inputmode="numeric" step="1" min="0" max="150000" placeholder="Steps" required>
       <button class="btn" id="wbtn" type="submit">Log</button>
     </div>
   </form>
@@ -142,18 +149,7 @@
 <!-- STEPS -->
 <div class="card">
   <h2>Steps</h2>
-  <p class="sched" id="shead">Log yesterday's total each morning, straight off the watch.</p>
-  <form id="sform" action="https://submit.jotform.com/submit/262110814232039" method="POST" target="ssink">
-    <input type="hidden" name="formID" value="262110814232039">
-    <input type="hidden" name="simple_spc" value="262110814232039-262110814232039">
-    <input type="hidden" name="q3_q3_textbox1" value="Matt Kocaj">
-    <div class="row">
-      <input type="number" name="q24_stepsYesterday" id="sval" inputmode="numeric" step="1" min="0" max="150000" placeholder="0" required>
-      <button class="btn secondary" id="sbtn" type="submit">Log</button>
-    </div>
-  </form>
-  <div class="ok" id="sok">Steps in. Keep moving.</div>
-  <div class="err" id="serr">That did not send. Check your signal and try again.</div>
+  <p class="sched" id="shead">Logged each morning with your weigh in.</p>
   <div id="stable" style="margin-top:12px;"></div>
   <div class="filecount" id="sempty">Your weekly averages build here from your first log.</div>
   <p class="filecount" id="sstreak" style="margin-top:8px;"></p>
@@ -212,7 +208,6 @@
 
 <iframe class="sink" name="wsink" id="wsink"></iframe>
 <iframe class="sink" name="psink" id="psink"></iframe>
-<iframe class="sink" name="ssink" id="ssink"></iframe>
 
 <script>
 (function(){
@@ -231,12 +226,12 @@
   // ---- weigh in ----
   var wform=document.getElementById('wform'), wbtn=document.getElementById('wbtn'),
       wok=document.getElementById('wok'), werr=document.getElementById('werr'),
-      wval=document.getElementById('wval'), wlast=document.getElementById('wlast'),
+      wval=document.getElementById('wval'), wsval=document.getElementById('wsval'), wlast=document.getElementById('wlast'),
       wsink=document.getElementById('wsink'), wpending=false;
   function showLast(){
     try{
       var d=JSON.parse(localStorage.getItem('hh_last_weigh_matt-k-ede90b')||'null');
-      if(d) wlast.textContent='Last logged: '+d.kg+' kg on '+d.day;
+      if(d) wlast.textContent='Last log: '+d.kg+' kg'+(d.steps?' and '+Number(d.steps).toLocaleString()+' steps':'')+' on '+d.day;
     }catch(e){}
   }
   showLast();
@@ -251,10 +246,16 @@
   wsink.addEventListener('load', function(){
     if(!wpending) return;
     wpending=false;
+    wok.textContent='Logged '+wval.value+' kg for today and '+Number(wsval.value).toLocaleString()+' steps for yesterday.';
     wok.style.display='block'; wbtn.disabled=false; wbtn.textContent='Log';
     try{
       var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      localStorage.setItem('hh_last_weigh_matt-k-ede90b', JSON.stringify({kg:wval.value, day:days[new Date().getDay()]}));
+      localStorage.setItem('hh_last_weigh_matt-k-ede90b', JSON.stringify({kg:wval.value, steps:wsval.value, day:days[new Date().getDay()]}));
+      var shist=JSON.parse(localStorage.getItem('hh_steps_history_matt-k-ede90b')||'[]');
+      var yIso=yestIso();
+      shist=shist.filter(function(e){return e.date!==yIso;});
+      shist.push({date:yIso, steps:parseInt(wsval.value,10)});
+      localStorage.setItem('hh_steps_history_matt-k-ede90b', JSON.stringify(shist.slice(-30)));
       var now=new Date();
       var iso=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
       var hist=JSON.parse(localStorage.getItem('hh_weigh_history_matt-k-ede90b')||'[]');
@@ -262,8 +263,8 @@
       hist.push({date:iso, kg:parseFloat(wval.value)});
       localStorage.setItem('hh_weigh_history_matt-k-ede90b', JSON.stringify(hist.slice(-30)));
     }catch(e){}
-    showLast(); wval.value='';
-    renderTracker();
+    showLast(); wval.value=''; wsval.value='';
+    renderTracker(); renderSteps();
   });
 
   // ---- weight tracker: WEEKLY AVERAGES from weights.json (verified ledger,
@@ -440,42 +441,15 @@
   var STEP_TARGET = 7000;  // daily step target
   var STEP_TARGET_FROM = '2026-09-07';  // target applies from this Monday
   var WEIGHT_GOAL = 0;        // 0 = no goal set; e.g. 85 shows progress toward 85kg
-  var sform=document.getElementById('sform'), sbtn=document.getElementById('sbtn'),
-      sok=document.getElementById('sok'), serr=document.getElementById('serr'),
-      sval=document.getElementById('sval'), ssink=document.getElementById('ssink'),
-      shead=document.getElementById('shead'), spending=false;
+  var shead=document.getElementById('shead');
   if(STEP_TARGET>0){
     var tIso=new Date().getFullYear()+'-'+String(new Date().getMonth()+1).padStart(2,'0')+'-'+String(new Date().getDate()).padStart(2,'0');
-    shead.textContent = (tIso < STEP_TARGET_FROM)
-      ? 'Target: '+STEP_TARGET.toLocaleString()+' a day, starts Monday 7 September. Log yesterday\'s total each morning.'
-      : 'Target: '+STEP_TARGET.toLocaleString()+' a day. Log yesterday\'s total each morning.';
+    shead.textContent = 'Target: '+STEP_TARGET.toLocaleString()+' a day, logged each morning with your weigh in.';
   }
   function yestIso(){
     var d=new Date(); d.setDate(d.getDate()-1);
     return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   }
-  sform.addEventListener('submit', function(){
-    sbtn.disabled=true; sbtn.textContent='...';
-    sok.style.display='none'; serr.style.display='none';
-    spending=true;
-    setTimeout(function(){
-      if(spending){ spending=false; serr.style.display='block'; sbtn.disabled=false; sbtn.textContent='Log'; }
-    }, 20000);
-  });
-  ssink.addEventListener('load', function(){
-    if(!spending) return;
-    spending=false;
-    sok.style.display='block'; sbtn.disabled=false; sbtn.textContent='Log';
-    try{
-      var hist=JSON.parse(localStorage.getItem('hh_steps_history_matt-k-ede90b')||'[]');
-      var iso=yestIso();
-      hist=hist.filter(function(e){return e.date!==iso;});
-      hist.push({date:iso, steps:parseInt(sval.value,10)});
-      localStorage.setItem('hh_steps_history_matt-k-ede90b', JSON.stringify(hist.slice(-30)));
-    }catch(e){}
-    sval.value='';
-    renderSteps();
-  });
   function renderSteps(){
     fetch('steps.json?t='+Date.now())
       .then(function(r){ return r.ok ? r.json() : []; })
@@ -519,6 +493,18 @@
           if(onTarget){
             var pct=Math.min(100, Math.round(avg/STEP_TARGET*100));
             html+='<div class="sbar"><i style="width:'+pct+'%"></i></div>';
+          }
+          if(k===curKey){
+            var dmap={}; entries.forEach(function(e){ dmap[e.date]=e.steps; });
+            var dnames=['M','T','W','T','F','S','S'], dh='<div class="dayrow">';
+            for(var di=0; di<7; di++){
+              var dd=new Date(k+'T00:00:00'); dd.setDate(dd.getDate()+di);
+              var dIso=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+              var sv=dmap[dIso];
+              var cls=(sv===undefined)?'':((STEP_TARGET>0 && sv>=STEP_TARGET)?' hit':' got');
+              dh+='<span class="dchip'+cls+'"><b>'+dnames[di]+'</b>'+(sv===undefined?'\u2013':(Math.round(sv/100)/10)+'k')+'</span>';
+            }
+            html+=dh+'</div>';
           }
         });
         tbl.innerHTML=html;
