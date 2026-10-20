@@ -62,7 +62,8 @@
   .dchip b{display:block; font-size:9px; font-weight:800; margin-bottom:1px; color:#c4c4c9;}
   .dchip.got{background:#eef3fb; color:#1d1d1f;}
   .dchip.hit{background:#e7f6ec; color:#1d7a3e;}
-  .dchip.got b,.dchip.hit b{color:inherit; opacity:.55;}
+  .dchip.low{background:#fdecec; color:#c0392b;}
+  .dchip.got b,.dchip.hit b,.dchip.low b{color:inherit; opacity:.55;}
   .row .btn{width:auto; flex:0 0 auto; padding:15px 22px;}
   .ok{
     display:none; margin-top:12px; font-size:13.5px; font-weight:700;
@@ -503,7 +504,7 @@
               var dd=new Date(k+'T00:00:00'); dd.setDate(dd.getDate()+di);
               var dIso=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
               var sv=dmap[dIso];
-              var cls=(sv===undefined)?'':((STEP_TARGET>0 && sv>=STEP_TARGET)?' hit':' got');
+              var cls=(sv===undefined)?'':(STEP_TARGET>0?((sv>=STEP_TARGET)?' hit':' low'):' got');
               dh+='<span class="dchip'+cls+'"><b>'+dnames[di]+'</b>'+(sv===undefined?'\u2013':(Math.round(sv/100)/10)+'k')+'</span>';
             }
             html+=dh+'</div>';
