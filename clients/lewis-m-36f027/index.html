@@ -57,6 +57,8 @@
   .btn:active{opacity:0.75;}
   .btn[disabled]{background:var(--mid); cursor:default;}
   .btn.secondary{background:#fff; color:var(--ink); border:1.5px solid var(--ink);}
+  .cilab{display:block; font-size:12px; font-weight:700; color:#6b6b70; margin:14px 2px 6px;}
+  .citext,.cisel{width:100%; box-sizing:border-box; border:1.5px solid #e3e3e6; border-radius:10px; padding:12px; font-size:14px; font-family:inherit; background:#fff; color:#1d1d1f;}
   .dayrow{display:flex; gap:4px; margin:6px 0 10px;}
   .dchip{flex:1; text-align:center; font-size:10px; color:#a7a7ad; background:#f4f4f4; border-radius:8px; padding:5px 0;}
   .dchip b{display:block; font-size:9px; font-weight:800; margin-bottom:1px; color:#c4c4c9;}
@@ -140,6 +142,7 @@
   <h2>Weight Tracker</h2>
   <p class="sched" id="trend"></p>
   <p class="filecount" id="weekstreak" style="margin-top:6px; display:none;"></p>
+  <p class="filecount" id="milestone" style="margin-top:6px; display:none;"></p>
   <div id="goalbar"></div>
   <svg id="spark" viewBox="0 0 300 100" style="width:100%; height:auto; display:none; margin:6px 0 10px;"></svg>
   <div id="wtable"></div>
@@ -156,30 +159,38 @@
   <p class="filecount" id="sstreak" style="margin-top:8px;"></p>
 </div>
 
-<!-- PHOTOS -->
-<div class="card">
-  <h2>Check In Photos</h2>
-  <p class="sched">Every Saturday morning, fasted. Before any food or liquid. Front, side and back.</p>
-  <img class="template" src="../../progress-photos/template-male.jpg" alt="Photo pose template: front, side, back">
-  <p class="tips">Match the template. Same spot, same light, phone at chest height, stand relaxed. Do not flex or suck in, honest beats flattering.</p>
-  <form id="pform" action="https://submit.jotform.com/submit/262091087523052" method="POST" target="psink" enctype="multipart/form-data">
-    <input type="hidden" name="formID" value="262091087523052">
-    <input type="hidden" name="simple_spc" value="262091087523052-262091087523052">
-    <input type="hidden" name="q3_q3_textbox1" value="Lewis Moses">
-    <input type="file" name="q24_yourPhotos[]" id="pfiles" accept="image/*" multiple hidden>
-    <div class="gap"><button type="button" class="btn" id="pickbtn">Choose Photos</button></div>
-    <div class="filecount" id="pcount"></div>
-    <div class="gap"><button class="btn" id="pbtn" type="submit" style="display:none;">Upload</button></div>
-  </form>
-  <div class="ok" id="pok">Photos in. Good stuff.</div>
-  <div class="err" id="perr">Upload did not send. Check your signal and try again.</div>
-</div>
-
 <!-- WEEKLY CHECK IN -->
 <div class="card" id="cicard">
   <h2>Weekly Check In</h2>
-  <p class="sched">Every Friday. Two minutes, be honest with it.</p>
-  <div class="gap"><a class="btn secondary" href="https://form.jotform.com/262090491834055?q3_textbox1=Lewis%20Moses">Open Check In</a></div>
+  <p class="sched">Every Saturday morning, fasted, before any food or liquid. Photos first, questions after, one send.</p>
+  <img class="template" src="../../progress-photos/template-male.jpg" alt="Photo pose template: front, side, back">
+  <p class="tips">Match the template. Same spot, same light, phone at chest height, stand relaxed. Do not flex or suck in, honest beats flattering.</p>
+  <form id="pform" action="https://submit.jotform.com/submit/262090491834055" method="POST" target="psink" enctype="multipart/form-data">
+    <input type="hidden" name="formID" value="262090491834055">
+    <input type="hidden" name="simple_spc" value="262090491834055-262090491834055">
+    <input type="hidden" name="q3_q3_textbox1" value="Lewis Moses">
+    <input type="file" name="q30_checkinPhotos[]" id="pfiles" accept="image/*" multiple hidden>
+    <div class="gap"><button type="button" class="btn secondary" id="pickbtn">Choose Photos</button></div>
+    <div class="filecount" id="pcount"></div>
+    <label class="cilab">Three wins from this week</label>
+    <textarea class="citext" name="q17_wins" rows="2" required></textarea>
+    <label class="cilab">Energy, sleep and stress this week?</label>
+    <select class="cisel" name="q21_energy" required><option value="" disabled selected>Pick one</option><option>1 (Not So Good)</option><option>2</option><option>3</option><option>4</option><option>5 (Feeling Great)</option></select>
+    <label class="cilab">What&#39;s your focus or challenge heading into next week?</label>
+    <textarea class="citext" name="q23_focus" rows="2" required></textarea>
+    <label class="cilab">How many days did you stick to your plan this week?</label>
+    <select class="cisel" name="q24_adherence" required><option value="" disabled selected>Pick one</option><option>7 (Every day)</option><option>5 to 6</option><option>3 to 4</option><option>2 or less</option></select>
+    <label class="cilab">Hunger between meals this week?</label>
+    <select class="cisel" name="q25_hunger" required><option value="" disabled selected>Pick one</option><option>1 (Starving all day)</option><option>2</option><option>3</option><option>4</option><option>5 (Barely think about food)</option></select>
+    <label class="cilab">Meal plan: anything you&#39;d change?</label>
+    <textarea class="citext" name="q28_mealplanFeedback" rows="2"></textarea>
+    <label class="cilab">Anything else you&#39;d like me to know from this week?</label>
+    <textarea class="citext" name="q29_anythingElse" rows="2"></textarea>
+    <div class="gap"><button class="btn" id="pbtn" type="submit">Send Check In</button></div>
+  </form>
+  <div class="ok" id="pok">Check in sent. Good stuff.</div>
+  <div class="err" id="perr">That did not send. Check your signal and try again.</div>
+  <div class="last" id="pilast"></div>
 </div>
 
 <!-- MEAL PLAN -->
@@ -220,7 +231,7 @@
     fb.style.display='block';
   }
   // ---- Friday check-in reminder: banner + highlighted card, all day Friday ----
-  if(new Date().getDay() === 5 && !(typeof PAUSED!=='undefined' && PAUSED)){
+  if(new Date().getDay() === 6 && !(typeof PAUSED!=='undefined' && PAUSED)){
     document.getElementById('fribanner').style.display='block';
     document.getElementById('cicard').classList.add('due');
   }
@@ -328,6 +339,18 @@
           wsEl.textContent = wkRun >= 2 ? wkRun + ' weeks in a row trending down.' : '';
           wsEl.style.display = wkRun >= 2 ? 'block' : 'none';
         }
+        var mi=document.getElementById('milestone');
+        if (mi) {
+          mi.style.display='none';
+          if (doneAvgs.length >= 2) {
+            var lastDone=doneAvgs[doneAvgs.length-1];
+            var minPrev=Math.min.apply(null, doneAvgs.slice(0,-1).map(function(w){return w.avg;}));
+            if (lastDone.avg < minPrev) {
+              mi.textContent='New best week: '+lastDone.avg+' kg, your lowest weekly average yet.';
+              mi.style.display='block';
+            }
+          }
+        }
         // goal progress
         var gb=document.getElementById('goalbar');
         if(typeof WEIGHT_GOAL!=='undefined' && WEIGHT_GOAL>0 && avgs.length){
@@ -411,31 +434,49 @@
   }
   renderTracker();
 
-  // ---- photos ----
+  // ---- weekly check in (photos + questions, one submit) ----
+  var SLUG=location.pathname.split('/').filter(Boolean).pop();
   var pform=document.getElementById('pform'), pfiles=document.getElementById('pfiles'),
       pickbtn=document.getElementById('pickbtn'), pbtn=document.getElementById('pbtn'),
       pcount=document.getElementById('pcount'), pok=document.getElementById('pok'),
       perr=document.getElementById('perr'), psink=document.getElementById('psink'), ppending=false;
+  var pilast=document.getElementById('pilast');
+  function showLastCheckin(){
+    try{
+      var d=JSON.parse(localStorage.getItem('hh_last_checkin_'+SLUG)||'null');
+      if(d) pilast.textContent='Last check in: '+d.when;
+    }catch(e){}
+  }
+  showLastCheckin();
   pickbtn.addEventListener('click', function(){ pfiles.click(); });
   pfiles.addEventListener('change', function(){
     var n=pfiles.files.length;
     pcount.textContent = n ? (n+(n===1?' photo':' photos')+' ready') : '';
-    pbtn.style.display = n ? 'block' : 'none';
     pok.style.display='none'; perr.style.display='none';
   });
   pform.addEventListener('submit', function(){
-    pbtn.disabled=true; pbtn.textContent='Uploading...';
+    pbtn.disabled=true; pbtn.textContent='Sending...';
     pok.style.display='none'; perr.style.display='none';
     ppending=true;
     setTimeout(function(){
-      if(ppending){ ppending=false; perr.style.display='block'; pbtn.disabled=false; pbtn.textContent='Upload'; }
+      if(ppending){ ppending=false; perr.style.display='block'; pbtn.disabled=false; pbtn.textContent='Send Check In'; }
     }, 120000);
   });
   psink.addEventListener('load', function(){
     if(!ppending) return;
     ppending=false;
-    pok.style.display='block'; pbtn.disabled=false; pbtn.textContent='Upload';
-    pbtn.style.display='none'; pcount.textContent=''; pform.reset();
+    var n=pfiles.files.length;
+    pok.textContent='Check in sent'+(n?(' with '+n+(n===1?' photo':' photos')):'')+'. Good stuff.';
+    pok.style.display='block'; pbtn.disabled=false; pbtn.textContent='Send Check In';
+    pcount.textContent='';
+    try{
+      var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var dn=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      var now=new Date();
+      localStorage.setItem('hh_last_checkin_'+SLUG, JSON.stringify({when:dn[now.getDay()]+' '+now.getDate()+' '+mn[now.getMonth()]}));
+    }catch(e){}
+    pform.reset();
+    showLastCheckin();
   });
 
   // ---- steps: log yesterday's total; weekly averages vs optional target ----
