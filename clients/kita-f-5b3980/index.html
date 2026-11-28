@@ -410,8 +410,8 @@
 
 
   // ---- steps: log yesterday's total; weekly averages vs optional target ----
-  var STEP_TARGET = 0;  // 0 = no target set yet; Luke sets per client
-  var STEP_TARGET_FROM = '';  // '' = from the start; 'YYYY-MM-DD' (a Monday) = target applies from that week
+  var STEP_TARGET = 6500;  // set 28 Nov 2026 (prev step avg ~5,153/day)
+  var STEP_TARGET_FROM = '2026-11-30';  // applies from Mon 30 Nov 2026
   var WEIGHT_GOAL = 0;        // 0 = no goal set; e.g. 85 shows progress toward 85kg
   var shead=document.getElementById('shead');
   if(STEP_TARGET>0){
